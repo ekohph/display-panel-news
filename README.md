@@ -13,7 +13,7 @@ This repository tracks public, source-linked updates related to:
 
 ## Contents
 
-- `summaries/`: daily display panel news summaries
+- `summaries/<월>/`: daily display panel news summaries grouped by month, for example `summaries/5월/`
 - `trends/weekly/`: weekly trend summaries
 
 ## Format
@@ -41,4 +41,3 @@ Article bullets include source links directly below the bullet:
 - The summaries are based on public web sources.
 - Repeated articles or substantially identical storylines are not intended to be repeated as new items.
 - Company coverage is based on news relevance, not endorsement or affiliation.
-
