@@ -10,7 +10,7 @@
 - 패널 구매 기업: Apple, Samsung Electronics, LG Electronics, Hyundai Motor Group / Kia, Meta, Valve 등
 - 플랫폼 생태계: Intel, NVIDIA 등 디스플레이 사양이나 로드맵에 영향을 줄 수 있는 플랫폼 기업
 - 공급망: DDI, Micro-OLED backplane, 소재, 장비, 규제, 관련 부품 및 업체
-- 연구 동향: 논문, preprint, 대학 및 연구기관 발표 자료 중 디스플레이 응용이 명확한 자료
+- 연구 동향: 논문, preprint, 대학 및 연구기관 발표 자료 중 디스플레이 응용이 명확한 자료. OLED/microLED 같은 발광소자뿐 아니라 a-IGZO/IGZO TFT, oxide TFT, LTPO/backplane, encapsulation, color conversion, stretchable display, AR/VR microdisplay, display manufacturing 연구도 포함합니다. 단, IGZO/oxide semiconductor 항목은 TFT 또는 thin-film transistor 등 소자 용어와 display, panel, backplane, pixel, OLED, LCD, AMOLED, microdisplay, active matrix 같은 디스플레이 앵커가 함께 확인될 때만 포함합니다.
 
 ## 폴더 구조
 
@@ -58,6 +58,8 @@ trends/monthly/
 - 누락된 날짜에 대해 빈 파일을 별도로 생성하지 않습니다.
 - 회사별 섹션은 뉴스 가치가 있는 항목이 있을 때만 표시합니다.
 - 연구 자료는 회사 뉴스와 구분해서 다루며, 디스플레이 응용이 명확한 경우에만 포함합니다.
+- IGZO가 DRAM, 3D NAND, embedded memory, neuromorphic memory, BEOL logic, power electronics, sensor 등 비디스플레이 응용으로만 제시된 논문은 제외합니다.
+- ACS ASAP 등 출판사 페이지가 검색엔진에 늦게 반영되거나 접근 제한이 있을 수 있으므로, 일요일 연구 조사에서는 Crossref, OpenAlex, PubMed 같은 DOI/논문 메타데이터 경로로도 제목·DOI·초록을 확인합니다.
 
 ## 참고
 
