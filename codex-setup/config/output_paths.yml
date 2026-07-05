@@ -1,0 +1,25 @@
+output_paths:
+  daily_summary:
+    path_pattern: "summaries/{month_ko}/{date}.md"
+    example: "summaries/7월/2026-07-05.md"
+
+  weekly_trend:
+    path_pattern: "trends/weekly/{iso_year}-W{iso_week}.md"
+    example: "trends/weekly/2026-W27.md"
+
+  monthly_trend:
+    path_pattern: "trends/monthly/{year}-{month}.md"
+    example: "trends/monthly/2026-07.md"
+
+  dedupe_index:
+    public_example: "codex-setup/templates/seen_articles.example.json"
+    operational_file_optional: "seen_articles.json"
+    note: "If a live dedupe index is used, keep it public only when every entry is derived from public sources."
+
+format:
+  language: "ko"
+  file_encoding: "UTF-8"
+  markdown_style:
+    source_links: "Place 원문 and 교차 확인 links directly under the relevant bullet."
+    empty_sections: "Omit empty sections."
+    private_notes: "Do not include private operational notes in public outputs."

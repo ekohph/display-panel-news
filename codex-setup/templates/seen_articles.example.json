@@ -1,0 +1,18 @@
+{
+  "articles": [
+    {
+      "date": "YYYY-MM-DD",
+      "title": "Public article or paper title",
+      "url": "https://example.com/source",
+      "source_type": "industry_media | official_announcement | market_intelligence | paper | research_release",
+      "companies": [],
+      "categories": [],
+      "dedupe_keys": {
+        "doi": null,
+        "arxiv_id": null,
+        "pubmed_id": null,
+        "normalized_title": "public article or paper title"
+      }
+    }
+  ]
+}

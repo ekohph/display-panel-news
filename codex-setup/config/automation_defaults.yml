@@ -1,0 +1,24 @@
+automation_defaults:
+  purpose: "Generate public display-panel news briefings on a recurring schedule."
+  default_output_format: "Markdown"
+  default_research_behavior: "Run Sunday research coverage on Sunday only."
+  default_delivery:
+    email: false
+    commit: false
+    push: false
+  recommended_environment:
+    local: "Use when the repository is on the user's computer and the user expects local files to be updated."
+    worktree: "Use only when the user wants Codex to run in a separate managed worktree."
+  setup_policy:
+    - "Ask the user to choose schedule and timezone before creating the automation."
+    - "Use Codex's automation capability when available; do not hand-write raw automation configuration."
+    - "Use a reviewable proposal when the Codex surface supports it."
+    - "Do not promise that missed local runs will catch up after the computer was off unless the active Codex surface explicitly states that behavior."
+    - "Do not send email, commit, or push unless the user explicitly requests those actions."
+  safe_defaults:
+    schedule: "Every day or every weekday at a user-chosen morning time."
+    timezone: "Use the user's locale unless the user chooses another timezone."
+    output_path: "summaries/{month_ko}/{date}.md"
+    sunday_research: true
+    email: false
+    auto_push: false

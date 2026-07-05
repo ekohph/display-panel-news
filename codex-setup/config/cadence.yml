@@ -1,0 +1,28 @@
+cadence:
+  daily:
+    purpose: "New public industrial news and buyer/platform/supply-chain developments."
+    include_research: false
+    exception: "Include a research item on a non-Sunday only when it is directly tied to a major public company announcement or a clearly material industry development."
+    lookback:
+      default: "From the most recent generated briefing reference time through the current reference time."
+      skipped_days: "If days were skipped, cover meaningful non-duplicate items since the previous briefing instead of creating empty backfill files."
+
+  sunday:
+    purpose: "Daily industrial briefing plus weekly research scan."
+    include_research: true
+    research_window: "Previous Monday through Sunday, local date."
+    research_section_name: "기술 논문 / 연구 동향"
+    include_only_if_meaningful: true
+
+  monthly:
+    purpose: "Longer-horizon industrial and research trend synthesis."
+    schedule: "First day of each month, or when explicitly requested."
+    output: "trends/monthly/YYYY-MM.md"
+    split_sections:
+      - "산업 동향"
+      - "기술 논문 / 연구 동향"
+
+  weekly_trend:
+    purpose: "Optional weekly roll-up when requested or scheduled."
+    schedule: "Sunday, or when explicitly requested."
+    output: "trends/weekly/YYYY-Www.md"

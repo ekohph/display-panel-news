@@ -1,0 +1,5 @@
+codex-local/
+.env
+.env.*
+*.log
+__pycache__/

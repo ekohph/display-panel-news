@@ -1,0 +1,81 @@
+research_rules:
+  cadence:
+    ordinary_daily: "Do not run broad paper search unless a research item is directly tied to a major public industry announcement."
+    sunday: "Run weekly research search and include a section only when meaningful display-related items are found."
+    monthly: "Include longer-horizon paper and research trend synthesis."
+
+  include_when:
+    - "The source explicitly connects the work to display devices, panel architecture, display backplanes, pixels, OLED, LCD, AMOLED, microdisplay, active matrix, display manufacturing, or display materials."
+    - "The public abstract, official journal page, DOI metadata, university release, or reputable secondary source supports the display relevance."
+    - "The item is meaningfully new and not already covered by DOI, arXiv ID, official URL, or normalized title."
+
+  exclude_when:
+    - "The work is only generally about semiconductors, optics, materials, sensors, memory, AI, or power electronics without explicit display relevance."
+    - "The only visible information is paywalled and public metadata is too thin to support a defensible summary."
+    - "The paper is a minor incremental variant and has no clear implication for display technology, panel architecture, or manufacturing."
+
+  oxide_tft_and_igzo_rule:
+    reason: "IGZO and oxide semiconductors are used in both display backplanes and non-display semiconductor devices. Standalone IGZO is too broad."
+    never_use_as_standalone_inclusion_terms:
+      - "IGZO"
+      - "a-IGZO"
+      - "oxide semiconductor"
+    require_device_term:
+      - "IGZO TFT"
+      - "a-IGZO TFT"
+      - "amorphous indium gallium zinc oxide thin-film transistor"
+      - "oxide semiconductor TFT"
+      - "thin-film transistor"
+      - "TFT"
+      - "oxygen vacancy"
+      - "oxygen diffusion"
+      - "metal capping"
+      - "contact metal"
+      - "gate dielectric"
+      - "channel scaling"
+      - "ultrathin IGZO"
+    require_display_anchor:
+      - "display"
+      - "panel"
+      - "backplane"
+      - "pixel"
+      - "OLED"
+      - "LCD"
+      - "AMOLED"
+      - "microdisplay"
+      - "active matrix"
+      - "display manufacturing"
+    exclude_if_only_application_is:
+      - "DRAM"
+      - "3D NAND"
+      - "embedded memory"
+      - "neuromorphic memory"
+      - "BEOL logic"
+      - "power electronics"
+      - "sensor"
+      - "general semiconductor integration"
+
+  metadata_fallback:
+    use_when:
+      - "Publisher ASAP pages are not indexed yet."
+      - "Publisher pages block automated access."
+      - "Search results show a title but not a stable article page."
+    allowed_sources:
+      - "Crossref"
+      - "OpenAlex"
+      - "PubMed"
+      - "arXiv"
+      - "official DOI landing page"
+      - "official university or research-lab release"
+    summary_limit: "Use only publicly visible metadata and abstracts. Do not infer unsupported claims from a title alone."
+
+  deduplication:
+    primary_keys:
+      - "DOI"
+      - "arXiv ID"
+      - "PubMed ID"
+      - "official journal URL"
+      - "official university or lab release URL"
+    secondary_keys:
+      - "normalized title"
+      - "first author plus publication date"

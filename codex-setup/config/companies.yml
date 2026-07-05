@@ -1,0 +1,33 @@
+entity_policy:
+  public_neutrality:
+    description: "Keep this public setup neutral. Do not imply that the user belongs to any tracked company."
+    avoid_special_treatment: true
+    examples_should_use_generic_names: true
+
+  tracking_groups:
+    panel_makers:
+      description: "Global display panel makers and relevant subsidiaries."
+      public_list_policy: "Do not hard-code a sensitive company watchlist in this public setup. Use private local overrides when needed."
+
+    panel_buyers:
+      description: "Device, TV, automotive, XR, wearable, gaming, and signage companies when the news concerns display technology, panel sourcing, or display product strategy."
+
+    platform_ecosystem:
+      description: "Compute, GPU, AI PC, automotive, and XR platform companies when their requirements affect panel specifications, validation, adoption, or buyer roadmaps."
+
+    supply_chain:
+      description: "Publicly relevant materials, equipment, driver IC, glass, cover window, inspection, repair, and manufacturing suppliers."
+
+    research_institutions:
+      description: "Universities, public labs, consortia, and journal authors when the paper has explicit display relevance."
+
+private_override:
+  recommended_path: "codex-local/private_entities.yml"
+  commit_policy: "Do not commit private override files."
+  example_shape:
+    panel_makers:
+      - "Company name goes here"
+    panel_buyers:
+      - "Buyer name goes here"
+    official_urls:
+      - "https://example.com/newsroom"

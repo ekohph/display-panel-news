@@ -1,0 +1,81 @@
+categories:
+  panel_technology:
+    - OLED
+    - QD-OLED
+    - WOLED
+    - tandem OLED
+    - RGB OLED
+    - LCD
+    - oxide TFT
+    - LTPO
+    - backplane
+    - color conversion
+    - encapsulation
+    - stretchable display
+    - microdisplay
+    - Micro-OLED
+    - microLED
+    - Mini LED
+    - ePaper
+
+  product_segments:
+    - smartphone
+    - tablet
+    - notebook PC
+    - monitor
+    - TV
+    - automotive display
+    - XR
+    - wearable
+    - signage
+    - industrial display
+
+  supply_chain:
+    - driver IC
+    - display materials
+    - deposition
+    - lithography
+    - inspection
+    - repair
+    - glass substrate
+    - cover window
+    - polarizer
+    - touch sensor
+    - equipment
+    - regulation
+
+  market_and_strategy:
+    - capacity
+    - utilization
+    - yield
+    - pricing
+    - shipment
+    - product roadmap
+    - customer qualification
+    - licensing
+    - litigation
+    - export control
+    - procurement policy
+
+  platform_ecosystem:
+    - AI PC
+    - GPU ecosystem
+    - gaming
+    - automotive compute
+    - XR platform
+    - edge AI
+    - reference design
+    - certification
+
+  research:
+    - emissive materials
+    - oxide semiconductor TFT
+    - display backplane
+    - thin-film transistor
+    - quantum dot emitter
+    - perovskite LED
+    - light extraction
+    - lifetime
+    - high brightness
+    - flexible electronics
+    - display manufacturing

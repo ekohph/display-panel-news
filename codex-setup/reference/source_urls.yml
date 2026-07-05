@@ -1,0 +1,69 @@
+sources:
+  industry_media:
+    - url: "https://www.thelec.kr/news/articleList.html?view_type=sm"
+    - url: "https://www.thelec.net/"
+    - url: "https://zdnet.co.kr/"
+    - url: "https://www.oled-info.com/"
+    - url: "https://www.microled-info.com/"
+    - url: "https://displaydaily.com/"
+    - url: "https://www.etnews.com/"
+    - url: "https://it.chosun.com/"
+    - url: "https://biz.chosun.com/"
+    - url: "https://www.mk.co.kr/"
+    - url: "https://www.mt.co.kr/"
+    - url: "https://www.fnnews.com/"
+    - url: "https://www.hankyung.com/"
+    - url: "https://www.donga.com/news/Economy"
+    - url: "https://koreajoongangdaily.joins.com/"
+    - url: "https://www.digitimes.com/"
+    - url: "https://www.ledinside.com/"
+    - url: "https://www.ledinside.cn/"
+    - url: "https://www.trendforce.com/presscenter/"
+    - url: "https://xtech.nikkei.com/"
+
+  product_and_buyer_media:
+    - url: "https://www.whathifi.com/"
+    - url: "https://www.tomsguide.com/"
+    - url: "https://www.tomshardware.com/"
+    - url: "https://www.notebookcheck.net/"
+    - url: "https://www.techradar.com/"
+    - url: "https://www.macrumors.com/"
+    - url: "https://www.gizmochina.com/"
+    - url: "https://www.sammobile.com/"
+
+  market_intelligence:
+    - url: "https://omdia.tech.informa.com/pr/"
+    - url: "https://omdia.tech.informa.com/advance-your-business/displays"
+    - url: "https://counterpointresearch.com/en/insights"
+    - url: "https://counterpointresearch.com/en/coverage/display"
+    - url: "https://korea.counterpointresearch.com/"
+    - url: "https://ubiresearch.com/en/press-release/"
+
+  associations_and_events:
+    - url: "https://www.displayweek.org/"
+    - url: "https://www.kdia.org/bbs/bbsList.jsp?mgrId=64"
+
+  academic_and_metadata:
+    - url: "https://arxiv.org/"
+    - url: "https://arxiv.org/search/advanced"
+    - url: "https://api.crossref.org/"
+    - url: "https://api.openalex.org/"
+    - url: "https://pubmed.ncbi.nlm.nih.gov/"
+    - url: "https://www.nature.com/search"
+    - url: "https://www.science.org/action/doSearch"
+    - url: "https://pubs.acs.org/"
+    - url: "https://pubs.acs.org/journal/aamick"
+    - url: "https://advanced.onlinelibrary.wiley.com/journal/15214095"
+    - url: "https://pubs.aip.org/aip/apl"
+    - url: "https://ieeexplore.ieee.org/"
+    - url: "https://sid.onlinelibrary.wiley.com/"
+
+  platform_and_compute:
+    - url: "https://newsroom.intel.com/"
+    - url: "https://symposium.intel.com/"
+    - url: "https://nvidianews.nvidia.com/"
+    - url: "https://www.nvidia.com/en-us/about-nvidia/press-releases/"
+
+private_extension:
+  path: "codex-local/private_sources.yml"
+  commit: false
