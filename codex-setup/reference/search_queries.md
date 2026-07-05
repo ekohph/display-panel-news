@@ -63,6 +63,12 @@ Use co-occurrence style queries. Do not use standalone `IGZO`.
 "a-IGZO TFT" display backplane
 "oxide semiconductor TFT" display backplane
 "amorphous indium gallium zinc oxide" "thin-film transistor" display
+"In-Ga-O TFT" display backplane
+"IGO TFT" display backplane
+"polycrystalline oxide TFT" display backplane
+"polycrystalline In-Ga-O" "thin-film transistor" display
+"Journal of SID" "TFT" display
+site:sid.onlinelibrary.wiley.com/doi TFT display
 "oxygen diffusion" "IGZO TFT" display
 "metal capping" "IGZO TFT" backplane
 "gate dielectric" "oxide TFT" display

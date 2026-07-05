@@ -39,7 +39,7 @@ Do not include standalone IGZO results.
 
 For IGZO or oxide-semiconductor papers, require both:
 
-1. a device term, such as `IGZO TFT`, `a-IGZO TFT`, `oxide semiconductor TFT`, `thin-film transistor`, `oxygen diffusion`, `metal capping`, or `gate dielectric`; and
+1. a device term, such as `IGZO TFT`, `a-IGZO TFT`, `In-Ga-O TFT`, `IGO TFT`, `polycrystalline oxide TFT`, `oxide semiconductor TFT`, `thin-film transistor`, `oxygen diffusion`, `metal capping`, or `gate dielectric`; and
 2. a display anchor, such as `display`, `panel`, `backplane`, `pixel`, `OLED`, `LCD`, `AMOLED`, `microdisplay`, or `active matrix`.
 
 Exclude items whose only application is memory, BEOL logic, sensors, power electronics, or general semiconductor integration.

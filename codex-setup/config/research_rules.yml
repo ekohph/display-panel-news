@@ -23,6 +23,10 @@ research_rules:
     require_device_term:
       - "IGZO TFT"
       - "a-IGZO TFT"
+      - "In-Ga-O TFT"
+      - "IGO TFT"
+      - "polycrystalline In-Ga-O thin-film transistor"
+      - "polycrystalline oxide TFT"
       - "amorphous indium gallium zinc oxide thin-film transistor"
       - "oxide semiconductor TFT"
       - "thin-film transistor"
