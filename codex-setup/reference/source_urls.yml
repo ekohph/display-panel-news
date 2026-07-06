@@ -1,4 +1,8 @@
 sources:
+  discovery_tools:
+    - url: "https://news.google.com/rss/search"
+      notes: "Use as a broad discovery endpoint only. Follow original publisher links and cite original URLs."
+
   industry_media:
     - url: "https://www.thelec.kr/news/articleList.html?view_type=sm"
     - url: "https://www.thelec.net/"

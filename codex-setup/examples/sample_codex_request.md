@@ -13,6 +13,8 @@ Rules:
 - Do not use private data.
 - Do not send email.
 - Do not push until I approve.
+- Use Google News RSS queries from codex-setup/reference/search_queries.md as a broad discovery layer, but cite original publisher URLs.
+- Exclude wikileaks-kr.org unless I explicitly ask you to inspect it; treat it only as a weak lead requiring stronger corroboration.
 - For research papers, follow codex-setup/config/research_rules.yml.
 - Save the daily Markdown file under summaries/<month_ko>/YYYY-MM-DD.md.
 ```

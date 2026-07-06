@@ -4,8 +4,17 @@ source_policy:
   prefer_primary_sources: true
   allow_reputable_secondary_sources: true
   paywall_policy: "Use only public metadata, snippets, abstracts, or reputable secondary coverage."
+  google_news_rss: "Use Google News RSS as a discovery layer only. Follow and cite the original publisher URL, not the Google News wrapper."
+  excluded_sources:
+    - domain: "wikileaks-kr.org"
+      reason: "Treat as a weak lead only. Do not include without stronger primary, official, or major-media corroboration unless the user explicitly asks to inspect the URL."
 
 source_groups:
+  discovery_tools:
+    - name: "Google News RSS"
+      url: "https://news.google.com/rss/search"
+      notes: "Endpoint form: https://news.google.com/rss/search?q=<URL-encoded query>&hl=ko&gl=KR&ceid=KR:ko. Use for broad discovery, then open and cite the original publisher URL."
+
   industry_media:
     - name: "The Elec Korea"
       url: "https://www.thelec.kr/news/articleList.html?view_type=sm"

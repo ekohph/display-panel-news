@@ -2,6 +2,33 @@
 
 Use these query patterns as starting points. Adjust date filters and source domains for the current briefing window.
 
+## Google News RSS Daily Discovery
+
+Use Google News RSS for broad Korean/English discovery:
+
+```text
+https://news.google.com/rss/search?q=<URL-encoded query>&hl=ko&gl=KR&ceid=KR:ko
+```
+
+Follow and cite the original publisher URL rather than the Google News wrapper. Deduplicate every candidate against recent summaries and `seen_articles.json`.
+
+Run at least these ordinary daily queries:
+
+```text
+삼성디스플레이 OLED
+LG디스플레이 OLED
+BOE OLED
+CSOT OLED
+디스플레이 장비 공급계약
+OLED 패널 공급
+폴더블 디스플레이 패널
+마이크로디스플레이 스마트글라스
+microdisplay smart glasses
+foldable display panel
+OLED equipment supply
+microLED display
+```
+
 ## Industrial News
 
 ```text

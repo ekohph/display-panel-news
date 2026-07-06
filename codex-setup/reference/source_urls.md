@@ -4,6 +4,12 @@ This is the human-readable companion to `source_urls.yml` and `config/sources.ym
 
 Keep this list public and neutral. Do not add private watchlists, internal sources, credentials, or company-specific priorities that could reveal the operator's affiliation.
 
+## Discovery Tools
+
+- Google News RSS: https://news.google.com/rss/search
+  - Endpoint form: `https://news.google.com/rss/search?q=<URL-encoded query>&hl=ko&gl=KR&ceid=KR:ko`
+  - Use only as a discovery layer. Follow and cite the original publisher URL, not the Google News wrapper.
+
 ## Industry Media
 
 - The Elec Korea: https://www.thelec.kr/news/articleList.html?view_type=sm
