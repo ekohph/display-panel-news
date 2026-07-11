@@ -1,0 +1,7 @@
+# Streamlit config (used when running `streamlit run app/app.py` from repo root).
+# See app/.streamlit/config.toml for why fileWatcherType is disabled.
+[server]
+fileWatcherType = "none"
+
+[browser]
+gatherUsageStats = false

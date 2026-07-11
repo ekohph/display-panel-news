@@ -17,6 +17,8 @@
 - `summaries/<월>/`: 일간 뉴스 요약 파일
 - `trends/weekly/`: 주간 경향 요약
 - `trends/monthly/`: 월간 산업 및 연구 경향 요약
+- `app/`: 요약 뉴스 기반 로컬 챗봇 웹앱 (Streamlit + LMStudio, 선택 사항)
+- `docs/images/`: 문서용 이미지
 
 예시:
 
@@ -60,6 +62,28 @@ trends/monthly/
 - 연구 자료는 회사 뉴스와 구분해서 다루며, 디스플레이 응용이 명확한 경우에만 포함합니다.
 - IGZO가 DRAM, 3D NAND, embedded memory, neuromorphic memory, BEOL logic, power electronics, sensor 등 비디스플레이 응용으로만 제시된 논문은 제외합니다.
 - ACS ASAP 등 출판사 페이지가 검색엔진에 늦게 반영되거나 접근 제한이 있을 수 있으므로, 일요일 연구 조사에서는 Crossref, OpenAlex, PubMed 같은 DOI/논문 메타데이터 경로로도 제목·DOI·초록을 확인합니다.
+
+## 뉴스 챗봇 웹앱 (Streamlit + LMStudio)
+
+`summaries/`에 쌓인 뉴스 브리핑을 근거로 대화할 수 있는 로컬 챗봇 웹앱을 `app/`에 포함하고 있습니다.
+
+- UI: Streamlit 채팅 인터페이스
+- LLM: LMStudio 로컬 서버 (OpenAI 호환 API, 다른 PC의 서버로 교체 가능)
+- 검색: 로컬 임베딩 + FAISS 기반 RAG
+- 파이프라인: LangGraph — `panel_maker` / `buyer` / `vendor` 노드가 각자 해당 카테고리 뉴스만 검색한 뒤 근거 기반으로 답변하고, 참고한 뉴스의 원문 링크를 함께 표시합니다.
+
+실행 예시:
+
+![뉴스 챗봇 웹앱 실행 화면](docs/images/app_capture.jpg)
+
+설치와 실행 방법, LLM/임베딩 교체 방법은 [app/README.md](app/README.md)를 참고하세요.
+
+```powershell
+pip install -r app/requirements.txt
+python -m streamlit run app/app.py
+```
+
+새 브리핑 파일을 추가한 뒤에는 `python app/build_index.py`로 검색 인덱스를 갱신할 수 있으며, Codex 자동화의 마지막 단계에도 이 갱신이 포함되어 있습니다.
 
 ## 참고
 

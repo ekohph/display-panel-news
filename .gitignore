@@ -3,3 +3,9 @@ codex-local/
 .env.*
 *.log
 __pycache__/
+
+# app/ python env & build artifacts
+.venv/
+venv/
+app/.rag_index/
+*.pyc

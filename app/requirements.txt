@@ -1,0 +1,18 @@
+# --- Web UI ---
+streamlit>=1.40
+
+# --- LangChain / LangGraph core ---
+langchain>=0.3
+langchain-core>=0.3
+langchain-community>=0.3
+langchain-openai>=0.2          # ChatOpenAI -> LMStudio (OpenAI-compatible /v1)
+langgraph>=0.2
+
+# --- RAG: local embeddings + vector store ---
+langchain-huggingface>=0.1
+sentence-transformers>=3.0     # local embedding model (runs on this PC)
+faiss-cpu>=1.8
+
+# --- misc ---
+python-dotenv>=1.0
+pyyaml>=6.0

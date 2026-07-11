@@ -1,0 +1,12 @@
+# Streamlit config for the news chat app (used when run from the app/ folder).
+#
+# fileWatcherType = "none" fixes a crash where Streamlit's source watcher walks
+# transformers' lazy submodules (e.g. zoedepth) after the model is imported,
+# triggering a torchvision import that isn't installed:
+#     ModuleNotFoundError: No module named 'torchvision'
+# Trade-off: no auto-reload on code edits — restart the app to pick up changes.
+[server]
+fileWatcherType = "none"
+
+[browser]
+gatherUsageStats = false

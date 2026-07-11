@@ -22,3 +22,9 @@ automation_defaults:
     sunday_research: true
     email: false
     auto_push: false
+  post_generation:
+    rebuild_rag_index:
+      command: "python app/build_index.py"
+      when: "After a briefing file is created or updated, if the script exists in the repository."
+      purpose: "Keep the local RAG chat app's index in sync with the newest summaries."
+      on_missing: "Skip silently; the chat app is optional."

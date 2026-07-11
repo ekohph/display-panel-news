@@ -28,6 +28,9 @@ Keep the writing company-neutral. Do not imply that the user belongs to any spec
 6. Deduplicate by URL, DOI, official source, and normalized headline.
 7. Include only items with clear display relevance.
 8. Write the output under the path defined in `config/output_paths.yml`.
+9. If `app/build_index.py` exists in this repository, run `python app/build_index.py`
+   after saving the briefing so the local RAG chat index includes the new file.
+   Skip silently if the script or its dependencies are not present.
 
 ## Output Format
 
