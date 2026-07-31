@@ -11,10 +11,12 @@ graph/ / rag/. This file is UI only.
 from __future__ import annotations
 
 import json
+import importlib
 import re
 import sys
 from html import escape
 from pathlib import Path
+from time import perf_counter
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -25,6 +27,8 @@ if str(APP_DIR) not in sys.path:
     sys.path.insert(0, str(APP_DIR))
 
 from config import REPO_ROOT, settings  # noqa: E402
+
+ENGINE_CACHE_VERSION = "stateless-chat-v2-corpus"
 
 st.set_page_config(page_title="Display Chat", page_icon="🖥️", layout="wide")
 
@@ -55,20 +59,22 @@ st.markdown(
 
 
 # --------------------------------------------------------------------------
-# Cached backend (built once per session, survives Streamlit reruns)
+# Cached backend (built once per backend version, survives Streamlit reruns)
 # --------------------------------------------------------------------------
-@st.cache_resource(show_spinner="뉴스 인덱스와 그래프를 준비하는 중… (최초 1회는 임베딩 모델 다운로드로 느릴 수 있어요)")
-def _load_engine():
+@st.cache_resource(show_spinner="자료를 찾아 답변 생성 중...")
+def _load_engine(cache_version: str):
     """Import + build the LangGraph chat app. Returns (module, graph)."""
+    del cache_version  # included in the cache key so backend changes rebuild it
     import engine  # imported lazily so the UI can show a helpful error
 
+    engine = importlib.reload(engine)
     graph = engine.build_chat_app()
     return engine, graph
 
 
 def get_engine():
     try:
-        return _load_engine()
+        return _load_engine(ENGINE_CACHE_VERSION)
     except ModuleNotFoundError as exc:  # missing pip deps
         st.error(
             f"필요한 패키지를 불러오지 못했습니다: `{exc.name}`.\n\n"
@@ -82,19 +88,25 @@ def get_engine():
 
 
 @st.cache_resource(show_spinner=False)
-def _load_bm25_index():
+def _load_bm25_index(cache_version: str):
     """Load the persisted BM25 index for sidebar document search."""
+    del cache_version
     from rag.vectorstore import build_or_load_vectorstore
 
     return build_or_load_vectorstore()
 
 
-def _search_chunks(query: str) -> list[tuple[str, str, float | None]]:
-    """Return ranked chunks with their source Markdown paths."""
+def _search_chunks(
+    query: str,
+) -> tuple[list[tuple[str, str, float | None]], dict[str, float]]:
+    """Return ranked chunks and per-stage timing for sidebar search diagnostics."""
     from rag.query_expansion import expand_query
 
-    index = _load_bm25_index()
+    started_at = perf_counter()
+    index = _load_bm25_index(settings.rag_index_version)
+    index_loaded_at = perf_counter()
     expanded_query = expand_query(query)
+    query_expanded_at = perf_counter()
     search_with_scores = getattr(index, "search_with_scores", None)
     if callable(search_with_scores):
         ranked = search_with_scores(
@@ -110,6 +122,7 @@ def _search_chunks(query: str) -> list[tuple[str, str, float | None]]:
                 expanded_query, category=None, k=index.document_count
             )
         ]
+    search_completed_at = perf_counter()
 
     results: list[tuple[str, str, float | None]] = []
     for document, score in ranked:
@@ -117,7 +130,15 @@ def _search_chunks(query: str) -> list[tuple[str, str, float | None]]:
         if not path:
             continue
         results.append((path, document.page_content, score))
-    return results
+    completed_at = perf_counter()
+    timings = {
+        "index_ms": (index_loaded_at - started_at) * 1000,
+        "expansion_ms": (query_expanded_at - index_loaded_at) * 1000,
+        "bm25_ms": (search_completed_at - query_expanded_at) * 1000,
+        "results_ms": (completed_at - search_completed_at) * 1000,
+        "total_ms": (completed_at - started_at) * 1000,
+    }
+    return results, timings
 
 
 def _query_context(chunk: str, query: str) -> str:
@@ -177,27 +198,41 @@ def _file_button_label(file: Path, *, weekly: bool = False) -> str:
 
 
 def _render_file_tree(root: Path, label: str) -> None:
-    """Render a collapsed folder with compact five-column file buttons."""
-    with st.expander(f"📁 {label}", expanded=False):
+    """Render a folder tree with compact file buttons."""
+    with st.expander(f"📁 {label}", expanded=label == "trends"):
         if not root.exists():
             st.caption("문서가 없습니다.")
             return
-        for folder in sorted((item for item in root.iterdir() if item.is_dir()), key=lambda item: item.name):
-            if label == "summaries":
-                folder_key = f"folder-expanded:{folder.relative_to(REPO_ROOT).as_posix()}"
-                is_expanded = st.session_state.get(folder_key, False)
-                folder_icon = "📂" if is_expanded else "📁"
-                if st.button(
-                    f"{folder_icon} {folder.name}",
-                    key=f"folder:{folder.relative_to(REPO_ROOT).as_posix()}",
-                    use_container_width=True,
-                ):
-                    st.session_state[folder_key] = not is_expanded
-                    st.rerun()
-                if not is_expanded:
-                    continue
-            else:
-                st.caption(f"📁 {folder.name}")
+        folders = sorted((item for item in root.iterdir() if item.is_dir()), key=lambda item: item.name)
+        latest_summary_folder = (
+            max(
+                folders,
+                key=lambda item: int(re.search(r"\d+", item.name).group())
+                if re.search(r"\d+", item.name)
+                else -1,
+                default=None,
+            )
+            if label == "summaries"
+            else None
+        )
+        for folder in folders:
+            folder_path = folder.relative_to(REPO_ROOT).as_posix()
+            folder_key = f"folder-expanded:{folder_path}"
+            default_expanded = (
+                (label == "trends" and folder.name.casefold() == "monthly")
+                or (label == "summaries" and folder == latest_summary_folder)
+            )
+            is_expanded = st.session_state.get(folder_key, default_expanded)
+            folder_icon = "📂" if is_expanded else "📁"
+            if st.button(
+                f"{folder_icon} {folder.name}",
+                key=f"folder:{folder_path}",
+                use_container_width=True,
+            ):
+                st.session_state[folder_key] = not is_expanded
+                st.rerun()
+            if not is_expanded:
+                continue
             files = sorted(folder.rglob("*.md"), key=lambda item: item.as_posix())
             is_weekly_folder = folder.name.casefold() == "weekly"
             column_count = 4 if is_weekly_folder else 5
@@ -333,7 +368,9 @@ def copy_button(text: str, label: str = "📋 복사", key: str = "") -> None:
 # --------------------------------------------------------------------------
 sidebar_query = ""
 sidebar_matches: list[tuple[str, str, float | None]] = []
+sidebar_search_timings: dict[str, float] = {}
 with st.sidebar:
+    st.caption("Keyword 검색")
     sidebar_query = st.text_input(
         "문서 검색",
         placeholder="BOE, CSOT, OLED ...",
@@ -341,9 +378,18 @@ with st.sidebar:
     ).strip()
     if sidebar_query:
         try:
-            sidebar_matches = _search_chunks(sidebar_query)
+            sidebar_matches, sidebar_search_timings = _search_chunks(sidebar_query)
         except Exception as exc:  # noqa: BLE001 - surface index/config issues in sidebar
             st.error(f"문서 검색을 준비하지 못했습니다: {exc}")
+    if sidebar_search_timings:
+        st.caption(
+            "검색 진단 · "
+            f"인덱스 {sidebar_search_timings['index_ms']:.0f}ms · "
+            f"별칭 {sidebar_search_timings['expansion_ms']:.0f}ms · "
+            f"BM25 {sidebar_search_timings['bm25_ms']:.0f}ms · "
+            f"결과 {sidebar_search_timings['results_ms']:.0f}ms · "
+            f"합계 {sidebar_search_timings['total_ms']:.0f}ms"
+        )
 
     _render_file_tree(settings.summaries_dir, "summaries")
     _render_file_tree(REPO_ROOT / "trends", "trends")
@@ -401,31 +447,15 @@ def _render_llm_error(exc: Exception) -> None:
 # Main chat area
 # --------------------------------------------------------------------------
 st.title("🖥️ 디스플레이 뉴스 Agent")
+st.caption("한 번에 하나의 질문만 답변합니다. 이전 질문과 답변은 다음 질문에 사용하거나 유지하지 않습니다.")
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# Replay history
-for i, msg in enumerate(st.session_state.messages):
-    with st.chat_message(msg["role"]):
-        if msg["role"] == "assistant":
-            _render_assistant(msg["content"], msg.get("meta"), key=i)
-        else:
-            st.markdown(msg["content"])
-
-# Copy the whole conversation
-if st.session_state.messages:
-    transcript = "\n\n".join(
-        f"[{'나' if m['role'] == 'user' else '어시스턴트'}]\n{m['content']}"
-        for m in st.session_state.messages
-    )
-    copy_button(transcript, "🗒️ 전체 대화 복사", key="all")
+# Remove any conversation history stored by an earlier version of the UI.
+st.session_state.pop("messages", None)
 
 with st.container():
     prompt = st.chat_input("예: 최근 TCL CSOT 8.6세대 장비 발주 상황 알려줘")
 
 if prompt:
-    st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
@@ -433,16 +463,12 @@ if prompt:
 
     with st.chat_message("assistant"):
         try:
-            with st.spinner("뉴스를 찾아 답변 생성 중…"):
-                history = [(m["role"], m["content"]) for m in st.session_state.messages[:-1]]
-                result = engine.run_turn(graph, prompt, history)
+            with st.spinner("자료를 찾아 답변 생성 중..."):
+                result = engine.run_turn(graph, prompt)
         except Exception as exc:  # noqa: BLE001 - show a clean error, no traceback
             _render_llm_error(exc)
         else:
-            _render_assistant(result["answer"], result, key=len(st.session_state.messages))
-            st.session_state.messages.append(
-                {"role": "assistant", "content": result["answer"], "meta": result}
-            )
+            _render_assistant(result["answer"], result, key="current")
 
 selected_document = st.session_state.get("selected_document")
 if sidebar_query:

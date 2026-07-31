@@ -34,7 +34,9 @@ def main() -> int:
     docs = load_documents()
     cats = Counter(d.metadata["category"] for d in docs)
     dates = sorted({d.metadata["date"] for d in docs})
-    print(f"summaries: {settings.summaries_dir}")
+    print("corpus:")
+    for name, path in settings.corpus_dirs:
+        print(f"  {name}: {path}")
     print(f"chunks   : {len(docs)}  {dict(cats)}")
     if dates:
         print(f"dates    : {dates[0]} .. {dates[-1]} ({len(dates)} days)")

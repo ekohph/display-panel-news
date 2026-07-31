@@ -22,8 +22,8 @@ app/
 ```
 
 파이프라인: `router` → (`panel_maker` | `buyer` | `vendor`)\* → `synthesize`.
-라우터가 질문에 필요한 뉴스 소스를 고르고, 선택된 노드가 자기 카테고리 뉴스만
-RAG로 검색한 뒤, 마지막에 근거 기반으로 답을 생성합니다.
+기본값은 라우터를 끄고 세 카테고리를 모두 검색합니다. `RAG_ROUTER_ENABLED=true`로
+설정하면 LMStudio 라우터가 필요한 카테고리만 선택한 뒤 RAG로 검색합니다.
 
 ## 사전 준비: LMStudio
 

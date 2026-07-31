@@ -6,6 +6,8 @@ from pathlib import Path
 
 import yaml
 
+from rag.company_aliases import company_alias_groups
+
 ALIASES_FILE = Path(__file__).with_name("query_aliases.yml")
 
 
@@ -36,7 +38,7 @@ def expand_query(query: str) -> str:
     additions: list[str] = []
     seen: set[str] = set()
 
-    for aliases in _load_groups():
+    for aliases in [*_load_groups(), *company_alias_groups()]:
         if not any(alias.casefold() in normalized for alias in aliases):
             continue
         for alias in aliases:

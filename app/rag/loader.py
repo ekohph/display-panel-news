@@ -15,7 +15,8 @@ from pathlib import Path
 
 from langchain_core.documents import Document
 
-from config import REPO_ROOT, settings
+from config import settings
+from rag.company_aliases import tag_companies
 
 # --------------------------------------------------------------------------
 # Classification lexicon.  Keyword hits in the subsection heading count most,
@@ -143,22 +144,25 @@ def classify(section: str, sub: str, body: str) -> str:
 
 
 def load_documents() -> list[Document]:
-    """Parse every summary file into categorized chunks."""
+    """Parse every configured corpus Markdown file into categorized chunks."""
     docs: list[Document] = []
-    summaries_dir: Path = settings.summaries_dir
-    if not summaries_dir.exists():
-        raise FileNotFoundError(f"summaries directory not found: {summaries_dir}")
+    sources: list[tuple[str, Path, Path]] = []
+    for corpus, corpus_dir in settings.corpus_dirs:
+        if not corpus_dir.exists():
+            raise FileNotFoundError(f"{corpus} directory not found: {corpus_dir}")
+        sources.extend((corpus, corpus_dir, md) for md in sorted(corpus_dir.rglob("*.md")))
 
-    for md in sorted(summaries_dir.rglob("*.md")):
+    for corpus, corpus_dir, md in sources:
         text = md.read_text(encoding="utf-8")
         m = DATE_RE.search(md.stem)
         date = m.group(1) if m else md.stem
-        rel = md.relative_to(REPO_ROOT).as_posix()
+        rel = f"{corpus}/{md.relative_to(corpus_dir).as_posix()}"
 
         for seg in _iter_segments(text):
             for chunk in _split_bullets(seg.body):
                 category = classify(seg.section, seg.sub, chunk)
                 title = seg.sub or seg.section
+                companies = tag_companies(f"{seg.section}\n{seg.sub}\n{chunk}")
                 # Prepend context so the LLM can ground and cite answers.
                 content = (
                     f"[{date} | {category} | {title}]\n"
@@ -175,7 +179,12 @@ def load_documents() -> list[Document]:
                             "title": title,
                             "section": seg.section,
                             "path": rel,
+                            "corpus": corpus,
+                            "rag_index_version": settings.rag_index_version,
                             "urls": urls,
+                            "companies": [company.name for company in companies],
+                            "company_ids": [company.id for company in companies],
+                            "company_categories": [company.category for company in companies],
                         },
                     )
                 )

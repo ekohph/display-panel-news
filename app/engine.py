@@ -22,11 +22,10 @@ def _dedupe_sources(sources: list[dict]) -> list[dict]:
     return out
 
 
-def run_turn(graph, question: str, history: list) -> dict:
-    """Run one chat turn. Returns {answer, route, sources}."""
+def run_turn(graph, question: str) -> dict:
+    """Run one independent chat turn. Returns {answer, route, sources}."""
     initial = {
         "question": question,
-        "history": history,
         "route": [],
         "contexts": [],
         "sources": [],

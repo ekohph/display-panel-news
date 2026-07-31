@@ -8,7 +8,7 @@
 
 from __future__ import annotations
 
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage
 
 from config import CATEGORIES, settings
 
@@ -55,6 +55,11 @@ def router_node(state, llm) -> dict:
     return {"route": route}
 
 
+def all_categories_node(_state) -> dict:
+    """Bypass LLM routing and retrieve every category."""
+    return {"route": list(CATEGORIES)}
+
+
 def route_selector(state) -> list[str]:
     """Path function for conditional edges: fan out to the chosen nodes."""
     return state.get("route") or list(CATEGORIES)
@@ -79,6 +84,7 @@ def make_category_node(category: str, retriever):
                 "title": d.metadata.get("title", ""),
                 "path": d.metadata.get("path", ""),
                 "urls": d.metadata.get("urls", []),
+                "companies": d.metadata.get("companies", []),
             }
             for d in docs
         ]
@@ -102,16 +108,6 @@ SYNTH_SYSTEM = (
 )
 
 
-def _history_messages(history) -> list:
-    msgs = []
-    for role, content in history or []:
-        if role == "user":
-            msgs.append(HumanMessage(content=content))
-        elif role == "assistant":
-            msgs.append(AIMessage(content=content))
-    return msgs
-
-
 def synthesize_node(state, llm) -> dict:
     contexts = state.get("contexts") or []
     context_block = "\n\n".join(contexts).strip() or "(관련 뉴스를 찾지 못했습니다.)"
@@ -125,10 +121,8 @@ def synthesize_node(state, llm) -> dict:
         f"질문:\n{state['question']}\n\n"
         f"뉴스 컨텍스트:\n{context_block}"
     )
-    messages = (
-        [SystemMessage(content=SYNTH_SYSTEM)]
-        + _history_messages(state.get("history"))
-        + [HumanMessage(content=user_prompt)]
-    )
+    # Deliberately stateless: each answer is grounded only in this question
+    # and the newly retrieved news context.
+    messages = [SystemMessage(content=SYNTH_SYSTEM), HumanMessage(content=user_prompt)]
     resp = llm.invoke(messages)
     return {"answer": resp.content}

@@ -1,11 +1,5 @@
 # Display Panel News
 
-## Panel price coverage
-
-Daily briefings also track publicly visible panel-price and ASP signals when available. The recurring sources include [TrendForce](https://www.trendforce.com/presscenter/) and [Omdia](https://omdia.tech.informa.com/advance-your-business/displays). Coverage may include TV, monitor, notebook, smartphone, OLED, and LCD panel quotes, price forecasts, and supplier price competition.
-
-Price figures are classified by type: direct transaction price, company-level blended ASP, area-based revenue estimate, or market benchmark. TrendForce and Omdia figures are not treated as a named supplier's contract price unless the source explicitly identifies it. Detailed calculations and historical price ranges are maintained separately in `../panel-pricing-research/`.
-
 디스플레이 패널 제조사, 패널 구매 기업, 플랫폼 생태계 기업, 주요 공급망, 그리고 디스플레이 관련 연구 동향을 정리하는 공개 뉴스 브리핑 저장소입니다.
 
 브리핑은 공개 웹 자료를 기준으로 작성하며, 각 항목에는 원문 링크를 함께 남깁니다.
@@ -17,6 +11,7 @@ Price figures are classified by type: direct transaction price, company-level bl
 - 플랫폼 생태계: Intel, NVIDIA 등 디스플레이 사양이나 로드맵에 영향을 줄 수 있는 플랫폼 기업
 - 공급망: DDI, Micro-OLED backplane, 소재, 장비, 규제, 관련 부품 및 업체
 - 연구 동향: 논문, preprint, 대학 및 연구기관 발표 자료 중 디스플레이 응용이 명확한 자료. OLED/microLED 같은 발광소자뿐 아니라 a-IGZO/IGZO TFT, oxide TFT, LTPO/backplane, encapsulation, color conversion, stretchable display, AR/VR microdisplay, display manufacturing 연구도 포함합니다. 단, IGZO/oxide semiconductor 항목은 TFT 또는 thin-film transistor 등 소자 용어와 display, panel, backplane, pixel, OLED, LCD, AMOLED, microdisplay, active matrix 같은 디스플레이 앵커가 함께 확인될 때만 포함합니다.
+- 패널 가격 동향: 공개된 TV·모니터·노트북·스마트폰용 OLED/LCD 패널의 가격, ASP, 전망 및 공급사 간 가격 경쟁을 추적합니다. 주요 출처는 [TrendForce](https://www.trendforce.com/presscenter/)와 [Omdia](https://omdia.tech.informa.com/advance-your-business/displays)이며, 가격은 실거래가·기업 ASP·면적당 매출 추정·시장 벤치마크로 구분합니다. 공급사가 명시되지 않은 두 기관의 수치는 개별 계약가로 해석하지 않으며, 상세 계산과 이력은 `../panel-pricing-research/`에서 관리합니다.
 
 ## 폴더 구조
 

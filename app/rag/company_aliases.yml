@@ -1,0 +1,154 @@
+# Canonical company vocabulary for the display-panel news workflow.
+# `name` is the display and storage name. `aliases` are accepted query/article forms.
+# Scope source: operations-local/PROJECT.md, "## Scope".
+
+companies:
+  - id: lg_display
+    name: LG Display
+    category: panel_maker
+    aliases:
+      - LG Display
+      - LGD
+      - LG디스플레이
+      - 엘지디스플레이
+
+  - id: samsung_display
+    name: Samsung Display
+    category: panel_maker
+    aliases:
+      - Samsung Display
+      - Samsung Display Co.
+      - SDC
+      - 삼성디스플레이
+      - 삼성 디스플레이
+
+  - id: boe
+    name: BOE
+    category: panel_maker
+    aliases:
+      - BOE
+      - BOE Technology
+      - BOE Technology Group
+      - BOE 테크놀로지
+      - 京东方
+      - 京東方
+
+  - id: tcl_csot
+    name: TCL CSOT
+    category: panel_maker
+    aliases:
+      - TCL CSOT
+      - CSOT
+      - TCL China Star
+      - China Star Optoelectronics Technology
+      - TCL华星
+      - 华星光电
+      - TCL 차이나스타
+
+  - id: tianma
+    name: Tianma
+    category: panel_maker
+    aliases:
+      - Tianma
+      - Tianma Microelectronics
+      - Tianma Micro
+      - 天马
+      - 天马微电子
+      - 티안마
+
+  - id: everdisplay
+    name: Everdisplay
+    category: panel_maker
+    aliases:
+      - Everdisplay
+      - EverDisplay
+      - EverDisplay Optronics
+      - EDO
+      - 和辉光电
+      - 에버디스플레이
+
+  - id: visionox
+    name: Visionox
+    category: panel_maker
+    aliases:
+      - Visionox
+      - Visionox Technology
+      - VISIONOX
+      - 维信诺
+      - 비저녹스
+
+  - id: apple
+    name: Apple
+    category: panel_buyer
+    aliases:
+      - Apple
+      - Apple Inc.
+      - 애플
+
+  - id: samsung_electronics
+    name: Samsung Electronics
+    category: panel_buyer
+    aliases:
+      - Samsung Electronics
+      - Samsung Electronics Co.
+      - SEC
+      - 삼성전자
+      - 삼성 전자
+
+  - id: lg_electronics
+    name: LG Electronics
+    category: panel_buyer
+    aliases:
+      - LG Electronics
+      - LGE
+      - LG전자
+      - 엘지전자
+
+  - id: hyundai_motor_group
+    name: Hyundai Motor Group
+    category: panel_buyer
+    aliases:
+      - Hyundai Motor Group
+      - Hyundai Motor
+      - Hyundai
+      - 현대자동차그룹
+      - 현대차그룹
+      - 현대자동차
+      - 현대차
+
+  - id: kia
+    name: Kia
+    category: panel_buyer
+    aliases:
+      - Kia
+      - Kia Corporation
+      - 기아
+      - 기아자동차
+
+  - id: meta
+    name: Meta
+    category: panel_buyer
+    aliases:
+      - Meta
+      - Meta Platforms
+      - Meta Platforms, Inc.
+      - Facebook
+      - 메타
+      - 메타 플랫폼스
+
+  - id: intel
+    name: Intel
+    category: platform_ecosystem
+    aliases:
+      - Intel
+      - Intel Corporation
+      - 인텔
+
+  - id: nvidia
+    name: NVIDIA
+    category: platform_ecosystem
+    aliases:
+      - NVIDIA
+      - Nvidia
+      - NVIDIA Corporation
+      - 엔비디아

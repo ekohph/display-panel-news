@@ -13,9 +13,10 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-# app/ directory and repo root (summaries live in <repo>/summaries)
+# app/ directory and repo root (summaries / trends live in <repo>/...)
 APP_DIR = Path(__file__).resolve().parent
 REPO_ROOT = APP_DIR.parent
+WORKSPACE_ROOT = REPO_ROOT.parent
 
 # Load app/.env if present (does not override already-set env vars).
 load_dotenv(APP_DIR / ".env")
@@ -24,6 +25,10 @@ load_dotenv(APP_DIR / ".env")
 def _get(key: str, default: str) -> str:
     val = os.getenv(key)
     return val if val not in (None, "") else default
+
+
+def _get_bool(key: str, default: bool = False) -> bool:
+    return _get(key, str(default)).strip().lower() in {"1", "true", "yes", "on"}
 
 
 @dataclass(frozen=True)
@@ -43,6 +48,9 @@ class Settings:
     bm25_b: float = float(_get("BM25_B", "0.75"))
     bm25_ngram_min: int = int(_get("BM25_NGRAM_MIN", "2"))
     bm25_ngram_max: int = int(_get("BM25_NGRAM_MAX", "4"))
+    # For the current small corpus, searching every category is cheaper and
+    # more reliable than making an additional LLM routing request.
+    router_enabled: bool = _get_bool("RAG_ROUTER_ENABLED", False)
 
     # --- Optional dense-vector storage ---
     # The current BM25 path does not create embeddings.  A future provider is
@@ -55,9 +63,23 @@ class Settings:
     # which matters for weak/unstable local GPUs.
     max_context_chars: int = int(_get("MAX_CONTEXT_CHARS", "2500"))
 
-    # --- Paths ---
+    # --- RAG corpus paths ---
     summaries_dir: Path = REPO_ROOT / "summaries"
+    trends_dir: Path = REPO_ROOT / "trends"
+    pricing_research_dir: Path = WORKSPACE_ROOT / "panel-pricing-research"
+    # Bump this when the chunk metadata or corpus scope changes. Existing
+    # joblib indexes then rebuild automatically on their next use.
+    rag_index_version: str = "corpus-v2"
     index_dir: Path = APP_DIR / ".rag_index"
+
+    @property
+    def corpus_dirs(self) -> tuple[tuple[str, Path], ...]:
+        """Named Markdown roots included in the BM25 RAG corpus."""
+        return (
+            ("summaries", self.summaries_dir),
+            ("trends", self.trends_dir),
+            ("panel-pricing-research", self.pricing_research_dir),
+        )
 
 
 settings = Settings()

@@ -15,7 +15,7 @@ INDEX_FILE = settings.index_dir / "bm25_store.joblib"
 
 
 def rebuild_vectorstore() -> BM25Index:
-    """Rebuild the persisted BM25 index from all current summary chunks."""
+    """Rebuild the persisted BM25 index from every configured corpus."""
     if settings.retrieval_backend != "bm25":
         raise ValueError(
             f"Unsupported retrieval backend: {settings.retrieval_backend}. "
@@ -35,7 +35,13 @@ def build_or_load_vectorstore() -> BM25Index:
             "Set RETRIEVAL_BACKEND=bm25."
         )
     if INDEX_FILE.exists():
-        return BM25Index.load(INDEX_FILE)
+        index = BM25Index.load(INDEX_FILE)
+        if all(
+            document.metadata.get("rag_index_version") == settings.rag_index_version
+            for document in index.documents
+        ):
+            return index
+        return rebuild_vectorstore()
     return rebuild_vectorstore()
 
 

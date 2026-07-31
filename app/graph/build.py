@@ -2,8 +2,8 @@
 
     START -> router -> (panel_maker | buyer | vendor)* -> synthesize -> END
 
-The router picks which category nodes run; selected nodes retrieve their
-category's news in parallel; synthesize grounds the final answer.
+The optional router picks which category nodes run. When disabled, every
+category runs without an additional LLM call; synthesize grounds the answer.
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ from functools import partial
 
 from langgraph.graph import END, START, StateGraph
 
-from config import CATEGORIES
+from config import CATEGORIES, settings
 from graph import nodes
 from graph.state import GraphState
 from embeddings import get_LLM
@@ -20,14 +20,17 @@ from rag.vectorstore import build_or_load_vectorstore, get_retrievers
 
 
 def build_graph():
-    llm = get_LLM()                       # answer generation
-    router_llm = get_LLM(temperature=0)   # deterministic routing
+    llm = get_LLM()  # answer generation
 
     vectorstore = build_or_load_vectorstore()
     retrievers = get_retrievers(vectorstore)
 
     g = StateGraph(GraphState)
-    g.add_node("router", partial(nodes.router_node, llm=router_llm))
+    if settings.router_enabled:
+        router_llm = get_LLM(temperature=0)
+        g.add_node("router", partial(nodes.router_node, llm=router_llm))
+    else:
+        g.add_node("router", nodes.all_categories_node)
     for cat in CATEGORIES:
         g.add_node(cat, nodes.make_category_node(cat, retrievers[cat]))
     g.add_node("synthesize", partial(nodes.synthesize_node, llm=llm))
