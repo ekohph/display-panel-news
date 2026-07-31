@@ -21,16 +21,17 @@ Keep the writing company-neutral. Do not imply that the user belongs to any spec
 ## Process
 
 1. Determine today's local date and reference time.
-2. Review the latest existing summary to avoid duplicates.
-3. Search the source groups in `config/sources.yml` and `reference/source_urls.yml`.
-4. Use Google News RSS queries from `reference/search_queries.md` as a broad discovery layer, then follow original publisher URLs.
-5. Use broader web search for missing public developments.
+2. Review the latest existing summary and the dedupe index to avoid duplicates.
+3. Start with the core source groups in `config/sources.yml` and `reference/source_urls.yml`; do not re-read the full workspace.
+4. Use Google News RSS queries from `reference/search_queries.md` only as a broad discovery layer, then follow original publisher URLs.
+5. Expand to broader web search only when the first-pass scan finds one or more candidate items or when the gap since the last summary is significant.
 6. Deduplicate by URL, DOI, official source, and normalized headline.
 7. Include only items with clear display relevance.
-8. Write the output under the path defined in `config/output_paths.yml`.
-9. If `app/build_index.py` exists in this repository, run `python app/build_index.py`
-   after saving the briefing so the local RAG chat index includes the new file.
-   Skip silently if the script or its dependencies are not present.
+8. Keep the output compact: use the minimum necessary sections and one source link per item unless a second source adds clear value.
+9. Write the output under the path defined in `config/output_paths.yml`.
+10. If `app/build_index.py` exists in this repository, run `python app/build_index.py`
+    after saving the briefing so the local RAG chat index includes the new file.
+    Skip silently if the script or its dependencies are not present.
 
 ## Output Format
 

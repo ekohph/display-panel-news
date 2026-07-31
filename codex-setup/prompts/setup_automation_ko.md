@@ -10,6 +10,7 @@ Help me set up a recurring Codex automation for public display-panel news briefi
 Important rules:
 - Use only public sources and the neutral rules in codex-setup/.
 - Use Google News RSS from `reference/search_queries.md` as a broad discovery layer, then follow and cite original publisher URLs.
+- Minimize token usage by starting from the latest summary and dedupe index, scanning the core source groups first, stopping early when nothing new is found, and keeping the output compact.
 - Exclude `wikileaks-kr.org` unless the user explicitly asks to inspect it. Treat it only as a weak lead and require stronger corroboration before inclusion.
 - Do not infer or mention my employer or affiliation.
 - Do not give special treatment to any one panel maker.

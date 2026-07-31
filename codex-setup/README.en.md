@@ -29,6 +29,13 @@ Across all 7 detected runs, the reported total token count averaged about `3.5M`
 
 These numbers are not an exact prediction of billing or credit usage. They are a rough scale estimate based on token usage recorded in Codex session logs. Actual usage can vary significantly depending on the number of searched sources, skipped dates, whether Sunday research coverage is enabled, page length, cache reuse, and whether automated commit/push is enabled.
 
+## Token-Saving Workflow Guidance
+
+- Start with the latest public summary, the dedupe index, and the core recurring source list; do not re-read the full workspace.
+- Stop immediately if the first pass finds no candidates.
+- Run broader web searches only after a candidate is found.
+- Keep the output compact: use only the minimum necessary sections and one source link per item unless a second source adds clear value.
+
 ## Quick Start
 
 1. Download this repository, or copy the `codex-setup/` directory into a public display-news repository.
