@@ -30,21 +30,29 @@ def _get(key: str, default: str) -> str:
 class Settings:
     # --- Chat LLM (LMStudio / OpenAI-compatible) ---
     llm_base_url: str = _get("LLM_BASE_URL", "http://localhost:1234/v1")
-    llm_api_key: str = _get("LLM_API_KEY", "lm-studio")  # LMStudio ignores it
-    # "auto" = detect the loaded model from the server's /v1/models.
-    # Pin a specific id (e.g. google/gemma-4-e4b) to override.
+    llm_api_key: str = _get("LLM_API_KEY", "lm-studio")
     llm_model: str = _get("LLM_MODEL", "auto")
     llm_temperature: float = float(_get("LLM_TEMPERATURE", "0.3"))
 
-    # --- RAG embeddings (local by default) ---
-    embed_model: str = _get("EMBED_MODEL", "intfloat/multilingual-e5-small")
-
     # --- Retrieval ---
+    # ``bm25`` is deliberately the default: it has no model download or
+    # embedding endpoint dependency.  ``chroma`` can be added later with an
+    # embedding provider from embeddings.py.
+    retrieval_backend: str = _get("RETRIEVAL_BACKEND", "bm25").lower()
+    bm25_k1: float = float(_get("BM25_K1", "1.5"))
+    bm25_b: float = float(_get("BM25_B", "0.75"))
+    bm25_ngram_min: int = int(_get("BM25_NGRAM_MIN", "2"))
+    bm25_ngram_max: int = int(_get("BM25_NGRAM_MAX", "4"))
+
+    # --- Optional dense-vector storage ---
+    # The current BM25 path does not create embeddings.  A future provider is
+    # implemented only in embeddings.get_embedding().
+    chroma_dir: Path = APP_DIR / _get("CHROMA_DIR", ".chroma")
+    chroma_collection: str = _get("CHROMA_COLLECTION", "display_panel_news")
+
     top_k: int = int(_get("RAG_TOP_K", "3"))
     # Cap the total context sent to the LLM. Keeps the synthesize prompt small,
-    # which matters a lot for weak/unstable local GPUs (large prompts can crash
-    # the LMStudio Vulkan backend with ErrorDeviceLost). Raise it if your model
-    # and GPU are comfortable with longer prompts.
+    # which matters for weak/unstable local GPUs.
     max_context_chars: int = int(_get("MAX_CONTEXT_CHARS", "2500"))
 
     # --- Paths ---

@@ -11,7 +11,9 @@ graph/ / rag/. This file is UI only.
 from __future__ import annotations
 
 import json
+import re
 import sys
+from html import escape
 from pathlib import Path
 
 import streamlit as st
@@ -22,9 +24,34 @@ APP_DIR = Path(__file__).resolve().parent
 if str(APP_DIR) not in sys.path:
     sys.path.insert(0, str(APP_DIR))
 
-from config import settings  # noqa: E402
+from config import REPO_ROOT, settings  # noqa: E402
 
 st.set_page_config(page_title="Display Chat", page_icon="🖥️", layout="wide")
+
+st.markdown(
+    """
+    <style>
+    section[data-testid="stSidebar"] div[data-testid="stExpander"] {
+        border-color: transparent;
+        box-shadow: none;
+    }
+    section[data-testid="stSidebar"] div[data-testid="stButton"] > button {
+        font-size: 0.8rem;
+        line-height: 1.1;
+        min-height: 0;
+        padding: 0.08rem 0;
+        white-space: nowrap;
+    }
+    section[data-testid="stSidebar"] div[data-testid="stExpander"] [data-testid="stHorizontalBlock"] {
+        gap: 0.2rem;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        border-color: #d9d9d9;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 # --------------------------------------------------------------------------
@@ -52,6 +79,213 @@ def get_engine():
     except Exception as exc:  # noqa: BLE001 - surface any build error to the user
         st.error(f"백엔드 초기화 실패: {exc}")
         st.stop()
+
+
+@st.cache_resource(show_spinner=False)
+def _load_bm25_index():
+    """Load the persisted BM25 index for sidebar document search."""
+    from rag.vectorstore import build_or_load_vectorstore
+
+    return build_or_load_vectorstore()
+
+
+def _search_chunks(query: str) -> list[tuple[str, str, float | None]]:
+    """Return ranked chunks with their source Markdown paths."""
+    from rag.query_expansion import expand_query
+
+    index = _load_bm25_index()
+    expanded_query = expand_query(query)
+    search_with_scores = getattr(index, "search_with_scores", None)
+    if callable(search_with_scores):
+        ranked = search_with_scores(
+            expanded_query, category=None, k=index.document_count
+        )
+    else:
+        # A running Streamlit process can retain an index object created before
+        # score-returning search was added.  Its document-only API is still
+        # sufficient to select the matching Markdown files.
+        ranked = [
+            (document, None)
+            for document in index.search(
+                expanded_query, category=None, k=index.document_count
+            )
+        ]
+
+    results: list[tuple[str, str, float | None]] = []
+    for document, score in ranked:
+        path = str(document.metadata.get("path", ""))
+        if not path:
+            continue
+        results.append((path, document.page_content, score))
+    return results
+
+
+def _query_context(chunk: str, query: str) -> str:
+    """Return the matching word plus up to five neighbouring words each side."""
+    words = list(re.finditer(r"\S+", chunk))
+    if not words:
+        return ""
+    match = re.search(re.escape(query), chunk, flags=re.IGNORECASE)
+    index = next(
+        (
+            i
+            for i, word in enumerate(words)
+            if match is not None and word.start() <= match.start() < word.end()
+        ),
+        0,
+    )
+    return " ".join(word.group(0) for word in words[max(0, index - 5) : index + 6])
+
+
+def _highlight_query(text: str, query: str) -> str:
+    """Escape Markdown source and highlight the user-entered search phrase."""
+    pattern = re.compile(re.escape(query), flags=re.IGNORECASE)
+    return pattern.sub(lambda match: f"<mark>{escape(match.group(0))}</mark>", escape(text))
+
+
+def _highlight_markdown(text: str, query: str) -> str:
+    """Preserve Markdown while inserting a yellow highlight around the query."""
+    pattern = re.compile(re.escape(query), flags=re.IGNORECASE)
+    return pattern.sub(lambda match: f"<mark>{match.group(0)}</mark>", text)
+
+
+def _read_markdown(relative_path: str) -> str | None:
+    """Read a known repository-relative Markdown file without path traversal."""
+    root = REPO_ROOT.resolve()
+    path = (root / relative_path).resolve()
+    try:
+        path.relative_to(root)
+    except ValueError:
+        return None
+    if not path.is_file() or path.suffix.lower() != ".md":
+        return None
+    return path.read_text(encoding="utf-8")
+
+
+def _select_document(relative_path: str) -> None:
+    st.session_state["selected_document"] = relative_path
+
+
+def _file_button_label(file: Path, *, weekly: bool = False) -> str:
+    """Return a compact day label, or the ISO week label for weekly reports."""
+    if weekly:
+        week_match = re.fullmatch(r"\d{4}-(W\d{1,2})", file.stem, flags=re.IGNORECASE)
+        if week_match:
+            return week_match.group(1).upper()
+    match = re.search(r"(?:^|[-_])(\d{1,2})$", file.stem)
+    return match.group(1) if match else file.stem
+
+
+def _render_file_tree(root: Path, label: str) -> None:
+    """Render a collapsed folder with compact five-column file buttons."""
+    with st.expander(f"📁 {label}", expanded=False):
+        if not root.exists():
+            st.caption("문서가 없습니다.")
+            return
+        for folder in sorted((item for item in root.iterdir() if item.is_dir()), key=lambda item: item.name):
+            if label == "summaries":
+                folder_key = f"folder-expanded:{folder.relative_to(REPO_ROOT).as_posix()}"
+                is_expanded = st.session_state.get(folder_key, False)
+                folder_icon = "📂" if is_expanded else "📁"
+                if st.button(
+                    f"{folder_icon} {folder.name}",
+                    key=f"folder:{folder.relative_to(REPO_ROOT).as_posix()}",
+                    use_container_width=True,
+                ):
+                    st.session_state[folder_key] = not is_expanded
+                    st.rerun()
+                if not is_expanded:
+                    continue
+            else:
+                st.caption(f"📁 {folder.name}")
+            files = sorted(folder.rglob("*.md"), key=lambda item: item.as_posix())
+            is_weekly_folder = folder.name.casefold() == "weekly"
+            column_count = 4 if is_weekly_folder else 5
+            columns = st.columns(column_count)
+            for index, file in enumerate(files):
+                relative_path = file.relative_to(REPO_ROOT).as_posix()
+                with columns[index % column_count]:
+                    if st.button(
+                        _file_button_label(file, weekly=is_weekly_folder),
+                        key=f"file:{relative_path}",
+                        help=file.name,
+                        use_container_width=True,
+                    ):
+                        _select_document(relative_path)
+
+
+def _render_document_preview(
+    relative_path: str,
+    score: float | None = None,
+    *,
+    full: bool = False,
+    highlight: str | None = None,
+) -> None:
+    """Show a Markdown document or its opening portion in the main frame."""
+    text = _read_markdown(relative_path)
+    if text is None:
+        st.warning(f"문서를 열 수 없습니다: `{relative_path}`")
+        return
+    path = Path(relative_path)
+    heading = f"📄 {path.name}"
+    if score is not None:
+        heading += f"  ·  BM25 {score:.2f}"
+    with st.container(border=True):
+        st.subheader(heading)
+        preview_chars = len(text) if full else 2800
+        body = text[:preview_chars]
+        st.markdown(
+            _highlight_markdown(body, highlight) if highlight else body,
+            unsafe_allow_html=highlight is not None,
+        )
+        if not full and len(text) > preview_chars:
+            st.caption("문서 앞부분만 표시했습니다. 사이드바에서 파일을 선택하면 전체 내용을 볼 수 있습니다.")
+
+
+def _render_search_results(
+    query: str, results: list[tuple[str, str, float | None]]
+) -> None:
+    """Render paginated chunk search results as a two-column table."""
+    page_size = 10
+    if st.session_state.get("search_page_query") != query:
+        st.session_state.search_page_query = query
+        st.session_state.search_page = 0
+
+    page_count = max(1, (len(results) + page_size - 1) // page_size)
+    page = min(st.session_state.get("search_page", 0), page_count - 1)
+    st.session_state.search_page = page
+    start = page * page_size
+
+    with st.container(border=True):
+        date_header, content_header = st.columns([1, 6])
+        date_header.markdown("**날짜**")
+        content_header.markdown("**내용**")
+
+    for offset, (path, chunk, _score) in enumerate(results[start : start + page_size]):
+        with st.container(border=True):
+            date_column, content_column = st.columns([1, 6])
+            date = Path(path).stem
+            with date_column:
+                if st.button(date, key=f"result:{start + offset}:{path}"):
+                    _select_document(path)
+            with content_column:
+                st.markdown(
+                    _highlight_query(_query_context(chunk, query), query),
+                    unsafe_allow_html=True,
+                )
+
+    if page_count > 1:
+        previous, indicator, next_page = st.columns([1, 2, 1])
+        with previous:
+            if st.button("이전", disabled=page == 0, key="search_previous"):
+                st.session_state.search_page = page - 1
+                st.rerun()
+        with indicator:
+            st.caption(f"{page + 1} / {page_count} 페이지 · 총 {len(results)}건")
+        with next_page:
+            if st.button("다음", disabled=page >= page_count - 1, key="search_next"):
+                st.session_state.search_page = page + 1
+                st.rerun()
 
 
 # --------------------------------------------------------------------------
@@ -97,56 +331,22 @@ def copy_button(text: str, label: str = "📋 복사", key: str = "") -> None:
 # --------------------------------------------------------------------------
 # Sidebar
 # --------------------------------------------------------------------------
+sidebar_query = ""
+sidebar_matches: list[tuple[str, str, float | None]] = []
 with st.sidebar:
-    st.header("⚙️ 설정")
-    st.caption("Chat LLM (LMStudio / OpenAI 호환)")
-
-    # Show the model that will actually be sent (auto-detected if LLM_MODEL=auto).
-    try:
-        import llm as _llm
-
-        resolved_model = _llm.resolve_model()
-    except Exception:  # noqa: BLE001
-        resolved_model = settings.llm_model
-    st.code(
-        f"base_url = {settings.llm_base_url}\n"
-        f"model    = {resolved_model}\n"
-        f"temp     = {settings.llm_temperature}",
-        language="text",
-    )
-    st.caption("임베딩 (로컬)")
-    st.code(f"embed = {settings.embed_model}", language="text")
-
-    if st.button("🔄 모델 새로고침", use_container_width=True,
-                 help="LMStudio에서 모델을 바꾼 뒤 눌러 재감지 + 그래프 재빌드"):
+    sidebar_query = st.text_input(
+        "문서 검색",
+        placeholder="BOE, CSOT, OLED ...",
+        label_visibility="collapsed",
+    ).strip()
+    if sidebar_query:
         try:
-            import llm as _llm
+            sidebar_matches = _search_chunks(sidebar_query)
+        except Exception as exc:  # noqa: BLE001 - surface index/config issues in sidebar
+            st.error(f"문서 검색을 준비하지 못했습니다: {exc}")
 
-            _llm.clear_model_cache()
-        except Exception:  # noqa: BLE001
-            pass
-        _load_engine.clear()
-        st.rerun()
-
-    st.divider()
-    if st.button("🗑️ 대화 초기화", use_container_width=True):
-        st.session_state.messages = []
-        st.rerun()
-
-    if st.button("♻️ RAG 인덱스 재생성", use_container_width=True):
-        # Drop the persisted index and the cached graph, then rebuild.
-        import shutil
-
-        if settings.index_dir.exists():
-            shutil.rmtree(settings.index_dir, ignore_errors=True)
-        _load_engine.clear()
-        st.success("인덱스를 지웠습니다. 다음 질문에서 다시 만듭니다.")
-
-    st.divider()
-    st.caption(
-        "그래프 노드: `panel_maker` · `buyer` · `vendor`\n\n"
-        "각 노드는 자기 카테고리 뉴스만 검색(RAG)합니다."
-    )
+    _render_file_tree(settings.summaries_dir, "summaries")
+    _render_file_tree(REPO_ROOT / "trends", "trends")
 
 
 # --------------------------------------------------------------------------
@@ -188,17 +388,7 @@ def _render_llm_error(exc: Exception) -> None:
     msg = str(exc)
     low = msg.lower()
     st.error("답변 생성 중 오류가 발생했습니다.")
-    if "devicelost" in low or "getfencestatus" in low or "vk::" in low:
-        st.warning(
-            "**LMStudio GPU(Vulkan) 장치가 추론 중 다운됐습니다 (ErrorDeviceLost).** "
-            "앱이 아니라 GPU/드라이버/VRAM 쪽 문제입니다. 아래를 시도해 보세요:\n\n"
-            "- LMStudio 모델 로드 설정에서 **GPU Offload 레이어 수 낮추기** (또는 0 = CPU)\n"
-            "- 더 **작은 모델 / 낮은 양자화(Q4_K_M 등)** 로 교체해 VRAM 확보\n"
-            "- **Context length** 줄이기\n"
-            "- Runtime 을 **Vulkan → CPU** (또는 CUDA/ROCm) 로 변경\n"
-            "- GPU 드라이버 업데이트 후 **모델 다시 로드**"
-        )
-    elif any(k in low for k in ("connection", "refused", "getaddrinfo", "max retries", "timed out", "timeout")):
+    if any(k in low for k in ("connection", "refused", "getaddrinfo", "max retries", "timed out", "timeout")):
         st.warning(
             f"**LMStudio 서버에 연결하지 못했습니다.** `{settings.llm_base_url}` 에서 "
             "Local Server가 실행 중이고 모델이 로드됐는지 확인하세요."
@@ -210,8 +400,7 @@ def _render_llm_error(exc: Exception) -> None:
 # --------------------------------------------------------------------------
 # Main chat area
 # --------------------------------------------------------------------------
-st.title("🖥️ 기술 경향 챗봇")
-st.caption("`summaries/` 의 공개 뉴스 브리핑을 근거로 답합니다. LMStudio LLM + LangGraph RAG.")
+st.title("🖥️ 디스플레이 뉴스 Agent")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -232,7 +421,8 @@ if st.session_state.messages:
     )
     copy_button(transcript, "🗒️ 전체 대화 복사", key="all")
 
-prompt = st.chat_input("예: 최근 TCL CSOT 8.6세대 장비 발주 상황 알려줘")
+with st.container():
+    prompt = st.chat_input("예: 최근 TCL CSOT 8.6세대 장비 발주 상황 알려줘")
 
 if prompt:
     st.session_state.messages.append({"role": "user", "content": prompt})
@@ -253,3 +443,25 @@ if prompt:
             st.session_state.messages.append(
                 {"role": "assistant", "content": result["answer"], "meta": result}
             )
+
+selected_document = st.session_state.get("selected_document")
+if sidebar_query:
+    st.subheader(f"문서 검색 결과: {sidebar_query}")
+    st.caption("검색 결과의 날짜를 클릭하면 표 하단의 ‘선택한 문서’에서 해당 Markdown 파일 전체를 볼 수 있습니다.")
+    if sidebar_matches:
+        _render_search_results(sidebar_query, sidebar_matches)
+    else:
+        st.info("일치하는 BM25 chunk를 찾지 못했습니다.")
+    st.divider()
+
+    selected_document = st.session_state.get("selected_document")
+    st.subheader("선택한 문서")
+    if selected_document:
+        _render_document_preview(selected_document, full=True, highlight=sidebar_query)
+    else:
+        st.info("검색 결과의 날짜를 선택하면 해당 Markdown 파일 전체를 표시합니다.")
+    st.divider()
+elif selected_document:
+    st.subheader("선택한 문서")
+    _render_document_preview(selected_document, full=True)
+    st.divider()

@@ -1,0 +1,26 @@
+# Query-expansion aliases for BM25 retrieval.
+# When a user query includes any alias, expand it with the other aliases in
+# the same group. Keep terms specific to display-panel news and add variants
+# only when they are genuinely interchangeable for retrieval.
+
+groups:
+  - id: inkjet_oled
+    aliases:
+      - 잉크젯
+      - inkjet
+      - ink-jet
+      - IJP
+
+  - id: micro_oled
+    aliases:
+      - 마이크로 OLED
+      - micro OLED
+      - micro-OLED
+      - OLEDoS
+
+  - id: samsung_display
+    aliases:
+      - 삼성디스플레이
+      - 삼성 디스플레이
+      - Samsung Display
+      - SDC

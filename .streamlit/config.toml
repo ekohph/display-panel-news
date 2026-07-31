@@ -2,6 +2,7 @@
 # See app/.streamlit/config.toml for why fileWatcherType is disabled.
 [server]
 fileWatcherType = "none"
+port = 8503
 
 [browser]
 gatherUsageStats = false

@@ -5,13 +5,15 @@ streamlit>=1.40
 langchain>=0.3
 langchain-core>=0.3
 langchain-community>=0.3
-langchain-openai>=0.2          # ChatOpenAI -> LMStudio (OpenAI-compatible /v1)
+langchain-openai>=0.2
 langgraph>=0.2
 
-# --- RAG: local embeddings + vector store ---
-langchain-huggingface>=0.1
-sentence-transformers>=3.0     # local embedding model (runs on this PC)
-faiss-cpu>=1.8
+# --- RAG: local, model-free BM25 retrieval ---
+scikit-learn>=1.5
+tomli; python_version < "3.11"
+
+langchain-chroma>=0.2
+chromadb>=0.5
 
 # --- misc ---
 python-dotenv>=1.0

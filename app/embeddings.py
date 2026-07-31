@@ -1,50 +1,70 @@
-"""Embedding model factory for the RAG index.
+"""Model-provider factory.
 
-`get_embeddings()` mirrors `get_LLM()`: it is the one place the app builds an
-embedding model, so the RAG backend can be swapped without touching the
-vector store or graph code.
-
-Default: a local sentence-transformers model (runs fully offline on this PC,
-no LMStudio embedding model required). The default is multilingual so Korean
-summaries embed well.
+Only this module knows how to construct the chat LLM or an optional dense
+embedding provider.  The rest of the app imports ``get_LLM()`` and
+``get_embedding()`` so either provider can be replaced later without changing
+the graph, retrievers, or Chroma update script.
 """
 
 from __future__ import annotations
 
+import functools
+
 from config import settings
 
+_AUTO_MODEL_SENTINELS = {"", "auto", "local-model", "local"}
 
-def get_embeddings():
-    """Return a LangChain `Embeddings` instance.
 
-    Default backend: local sentence-transformers via langchain-huggingface.
-    Change the model with the ``EMBED_MODEL`` env var, or switch backend
-    entirely below.
+@functools.lru_cache(maxsize=1)
+def _resolve_lmstudio_model() -> str | None:
+    """Detect the loaded LMStudio chat model when ``LLM_MODEL=auto``."""
+    try:
+        from openai import OpenAI
 
-    # ================= SWAP EMBEDDINGS ON ANOTHER PC =================
-    # The RAG code only depends on the LangChain Embeddings interface, so any
-    # of these can be returned instead without changing vectorstore.py/graph.
-    #
-    # (A) LMStudio / OpenAI-compatible embeddings (needs an embedding model
-    #     loaded in LMStudio, e.g. nomic-embed-text):
-    #       from langchain_openai import OpenAIEmbeddings
-    #       return OpenAIEmbeddings(
-    #           base_url=settings.llm_base_url,   # or a dedicated EMBED_BASE_URL
-    #           api_key=settings.llm_api_key,
-    #           model="text-embedding-nomic-embed-text-v1.5",
-    #           check_embedding_ctx_length=False,  # LMStudio needs this False
-    #       )
-    #
-    # (B) A different local sentence-transformers model:
-    #       just set EMBED_MODEL, e.g. jhgan/ko-sroberta-multitask
-    #
-    # NOTE: if you change the embedding model, delete app/.rag_index (or click
-    # "RAG 인덱스 재생성" in the sidebar) so the index is rebuilt to match.
-    # =================================================================
+        client = OpenAI(
+            base_url=settings.llm_base_url,
+            api_key=settings.llm_api_key,
+            timeout=8,
+        )
+        ids = [model.id for model in client.models.list().data]
+    except Exception:
+        return None
+    chat_ids = [model_id for model_id in ids if "embed" not in model_id.lower()]
+    return (chat_ids or ids or [None])[0]
+
+
+def _model_id() -> str:
+    configured = settings.llm_model.strip()
+    if configured.lower() not in _AUTO_MODEL_SENTINELS:
+        return configured
+    return _resolve_lmstudio_model() or configured or "local-model"
+
+
+def get_LLM(**overrides):
+    """Return the LangChain chat model currently used by the application.
+
+    The default implementation is LMStudio's OpenAI-compatible local server.
+    Replace only this function when another provider becomes available; callers
+    rely solely on the LangChain chat-model interface.
     """
-    from langchain_huggingface import HuggingFaceEmbeddings
+    from langchain_openai import ChatOpenAI
 
-    return HuggingFaceEmbeddings(
-        model_name=settings.embed_model,
-        encode_kwargs={"normalize_embeddings": True},
-    )
+    params = {
+        "base_url": settings.llm_base_url,
+        "api_key": settings.llm_api_key,
+        "model": _model_id(),
+        "temperature": settings.llm_temperature,
+        "timeout": 120,
+    }
+    params.update(overrides)
+    return ChatOpenAI(**params)
+
+
+def get_embedding():
+    """Return an optional dense embedding provider, or ``None`` by default.
+
+    BM25 does not need embeddings. When a provider is ready, implement it here
+    and return an object exposing ``embed_documents`` and
+    ``embed_query``.  Chroma indexing code already calls this function.
+    """
+    return None

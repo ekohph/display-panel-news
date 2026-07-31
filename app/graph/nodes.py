@@ -116,8 +116,7 @@ def synthesize_node(state, llm) -> dict:
     contexts = state.get("contexts") or []
     context_block = "\n\n".join(contexts).strip() or "(관련 뉴스를 찾지 못했습니다.)"
 
-    # Keep the prompt small: a large synthesize prompt can crash weak local GPUs
-    # (LMStudio Vulkan ErrorDeviceLost). Trim to the configured char budget.
+    # Keep the prompt small to avoid overloading weak local GPU backends.
     budget = settings.max_context_chars
     if len(context_block) > budget:
         context_block = context_block[:budget].rstrip() + "\n\n…(컨텍스트 일부 생략)"

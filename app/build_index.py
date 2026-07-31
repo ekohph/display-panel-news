@@ -40,7 +40,7 @@ def main() -> int:
         print(f"dates    : {dates[0]} .. {dates[-1]} ({len(dates)} days)")
 
     vs = rebuild_vectorstore()
-    print(f"index    : {vs.index.ntotal} vectors -> {settings.index_dir}")
+    print(f"index    : {vs.document_count} BM25 chunks -> {settings.index_dir}")
     print(f"done in {time.time() - t0:.1f}s")
     return 0
 

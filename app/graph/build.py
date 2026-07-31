@@ -15,7 +15,7 @@ from langgraph.graph import END, START, StateGraph
 from config import CATEGORIES
 from graph import nodes
 from graph.state import GraphState
-from llm import get_LLM
+from embeddings import get_LLM
 from rag.vectorstore import build_or_load_vectorstore, get_retrievers
 
 
