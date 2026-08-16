@@ -62,6 +62,11 @@ Keep this list public and neutral. Do not add private watchlists, internal sourc
 
 - arXiv: https://arxiv.org/
 - arXiv Advanced Search: https://arxiv.org/search/advanced
+- arXiv cs.AI: https://arxiv.org/list/cs.AI
+- arXiv cs.CV: https://arxiv.org/list/cs.CV
+- arXiv cs.LG: https://arxiv.org/list/cs.LG
+- arXiv cs.CL: https://arxiv.org/list/cs.CL
+- arXiv cs.RO: https://arxiv.org/list/cs.RO
 - Crossref API: https://api.crossref.org/
 - OpenAlex API: https://api.openalex.org/
 - PubMed: https://pubmed.ncbi.nlm.nih.gov/

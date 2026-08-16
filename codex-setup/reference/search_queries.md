@@ -81,6 +81,20 @@ color conversion display quantum dot paper
 stretchable display research
 ```
 
+## Sunday arXiv CS AI Search
+
+Sunday research coverage must include the following arXiv computer-science categories:
+
+```text
+site:arxiv.org/list/cs.AI new AI display manufacturing inspection materials
+site:arxiv.org/list/cs.CV display inspection defect detection manufacturing
+site:arxiv.org/list/cs.LG display materials discovery process control
+site:arxiv.org/list/cs.CL multimodal display manufacturing inspection
+site:arxiv.org/list/cs.RO robot display manufacturing inspection
+```
+
+Use the category pages or arXiv search filters for the prior Monday-Sunday window. Search terms should cover `display`, `panel`, `OLED`, `microLED`, `microdisplay`, `manufacturing`, `inspection`, `defect detection`, `yield`, `process control`, `materials`, `organic semiconductor`, `perovskite`, and `thin-film`.
+
 ## Oxide TFT and IGZO Search
 
 Use co-occurrence style queries. Do not use standalone `IGZO`.

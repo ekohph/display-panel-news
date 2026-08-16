@@ -4,10 +4,37 @@ research_rules:
     sunday: "Run weekly research search and include a section only when meaningful display-related items are found."
     monthly: "Include longer-horizon paper and research trend synthesis."
 
+  sunday_ai_paper_review:
+    required: true
+    arxiv_categories:
+      - "cs.AI"
+      - "cs.CV"
+      - "cs.LG"
+      - "cs.CL"
+      - "cs.RO"
+    scope: "Review the prior week's AI papers and select one Top 1 item across display-related AI, manufacturing or inspection technology, and materials-related AI."
+    priority_order:
+      - "Direct display-device, panel, display manufacturing, or inspection relevance"
+      - "Clear manufacturing or materials impact that can transfer to display production"
+      - "General AI relevance with a defensible display connection"
+    weak_display_rule: "If display relevance is weak, place the item in a separate AI-related section and state the specific connection to displays and its limitation."
+
   include_when:
     - "The source explicitly connects the work to display devices, panel architecture, display backplanes, pixels, OLED, LCD, AMOLED, microdisplay, active matrix, display manufacturing, or display materials."
     - "The public abstract, official journal page, DOI metadata, university release, or reputable secondary source supports the display relevance."
     - "The item is meaningfully new and not already covered by DOI, arXiv ID, official URL, or normalized title."
+
+  ai_top1_selection:
+    required_on_sunday: true
+    eligible_topics:
+      - "AI for display design, rendering, calibration, or display quality"
+      - "AI for display manufacturing, process control, yield, defect detection, or inspection"
+      - "AI for display materials discovery, formulation, or reliability prediction"
+    output_fields:
+      - "Top 1 선정 이유"
+      - "디스플레이 연결 관점"
+      - "한계 또는 상용화 거리"
+    rule: "Choose exactly one paper from the prior week; do not rank by citation count alone, and do not present a weakly related general AI paper as a display paper."
 
   exclude_when:
     - "The work is only generally about semiconductors, optics, materials, sensors, memory, AI, or power electronics without explicit display relevance."

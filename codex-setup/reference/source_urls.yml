@@ -50,6 +50,11 @@ sources:
   academic_and_metadata:
     - url: "https://arxiv.org/"
     - url: "https://arxiv.org/search/advanced"
+    - url: "https://arxiv.org/list/cs.AI"
+    - url: "https://arxiv.org/list/cs.CV"
+    - url: "https://arxiv.org/list/cs.LG"
+    - url: "https://arxiv.org/list/cs.CL"
+    - url: "https://arxiv.org/list/cs.RO"
     - url: "https://api.crossref.org/"
     - url: "https://api.openalex.org/"
     - url: "https://pubmed.ncbi.nlm.nih.gov/"
