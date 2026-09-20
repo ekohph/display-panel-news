@@ -22,7 +22,30 @@ research_rules:
   include_when:
     - "The source explicitly connects the work to display devices, panel architecture, display backplanes, pixels, OLED, LCD, AMOLED, microdisplay, active matrix, display manufacturing, or display materials."
     - "The public abstract, official journal page, DOI metadata, university release, or reputable secondary source supports the display relevance."
-    - "The item is meaningfully new and not already covered by DOI, arXiv ID, official URL, or normalized title."
+    - "For new-paper sections, the item is meaningfully new and not already covered by DOI, arXiv ID, official URL, or normalized title. The separate Sunday trend-linked review may revisit covered or older papers."
+
+  publisher_ai_discovery:
+    required_on_sunday: true
+    sources: ["publisher pages", "Crossref", "OpenAlex"]
+    rule: "Use all three as discovery routes alongside arXiv, not only metadata fallbacks. Search AI/display combinations in reference/search_queries.md and adapt them to the week's trends."
+    dates: "Verify first online publication separately from issue and discovery dates. Older papers belong in the trend-linked review, not the prior-week new-paper section."
+
+  trend_linked_paper_review:
+    heading: "이번 주 트렌드와 연결한 주요 논문 리뷰"
+    cadence: "Sunday"
+    count: "One or two important papers when a substantive weekly trend connection exists; otherwise omit."
+    publication_window: "Unrestricted; show the original publication date."
+    allow_previously_covered: true
+    selection: "Compare new discoveries and known papers by direct connection to the week's trends, significance and evidence. Explain when a newly found paper is more relevant than known candidates."
+    output_fields: ["논문명 / DOI / 최초 공개일", "첫 소개 또는 재검토", "이번 주 트렌드와의 연결", "핵심 기여", "근거와 한계", "지금 선정한 이유", "원문"]
+    rule: "Explain why a revisit matters now and link earlier briefing coverage when available. Keep this section separate from prior-week AI Top 1; avoid repeating a paper at length within one edition."
+
+  known_paper_memory:
+    local_path: "operations-local/known_papers.json (relative to the workflow root)"
+    statuses: ["candidate", "covered"]
+    rule: "Save relevant discoveries by normalized DOI/arXiv ID. Mark user-discussed or briefing-reported papers covered, distinguishing coverage_basis from briefing_history. Consult legacy seen_articles.json too."
+    exclusions: "Honor per-paper edition exclusions and no-reminder preferences. Covered papers remain eligible for justified trend-linked revisits, not first-time coverage."
+    privacy: "Keep private correspondence and contact details out of the register and public outputs."
 
   ai_top1_selection:
     required_on_sunday: true

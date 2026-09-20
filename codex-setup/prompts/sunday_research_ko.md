@@ -12,14 +12,23 @@ Search for meaningful display-related papers, preprints, university releases, re
 - `config/sources.yml`
 - `reference/search_queries.md`
 - `reference/source_urls.yml`
+- Workflow state: `operations-local/known_papers.json`, `operations-local/seen_articles.json`, and `operations-local/research_coverage.md` when available in the workflow root.
 
 ## Search Strategy
 
-1. Search journal and metadata sources for display-specific terms.
+1. Search publisher pages, Crossref and OpenAlex for the AI/display combinations in `reference/search_queries.md`, adapting them to the week's trends. Use these as discovery sources alongside arXiv, not merely as fallbacks.
 2. Search arXiv and Crossref/OpenAlex/PubMed for newly published or newly indexed items. The arXiv CS category pass is required on Sundays, not optional.
 3. Use publisher ASAP pages when accessible.
 4. If publisher pages are blocked or not indexed, verify via DOI metadata or public abstract records.
 5. Exclude weakly related papers.
+
+## Papers explaining the week's trends
+
+Add `## 이번 주 트렌드와 연결한 주요 논문 리뷰` after the new research and AI sections. Review one or two important papers tied to a concrete industrial or technical trend in this week's briefing. Search beyond the weekly publication window and compare new discoveries with known papers. Older and previously reported papers are allowed here; label them `첫 소개` or `재검토`, show original publication dates, and explain why they matter this week. Link earlier briefing coverage when available. Omit the section if no substantive connection exists.
+
+If a newly found paper is more relevant than a known candidate, select it and tell the reader why its connection is stronger. Include the contribution, evidence, limitations and DOI/source. Do not duplicate a full summary across sections or label an older paper as new weekly research.
+
+Persist relevant finds in the local known-paper register. Mark papers discussed with the user or included in a briefing as covered, keeping user acknowledgment separate from actual briefing history. Honor edition exclusions and no-reminder preferences. Already-covered status does not block a justified trend-linked revisit. Keep private correspondence out of public output.
 
 ## Weekly AI Top 1
 
@@ -75,7 +84,7 @@ When an AI paper is selected, add the following separate block after the display
 
 ### 주간 AI Top 1
 
-- 논문명 — arXiv category: `cs.AI` / `cs.CV` / `cs.LG` / `cs.CL` / `cs.RO`
+- 논문명 — 저널명 / DOI 또는 arXiv category와 ID, 최초 공개일
   Top 1 선정 이유: ...
   디스플레이 연결 관점: ...
   한계/주의점: ...

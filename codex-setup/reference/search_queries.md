@@ -81,6 +81,28 @@ color conversion display quantum dot paper
 stretchable display research
 ```
 
+## Sunday Publisher and Metadata AI Discovery
+
+Search publisher pages, Crossref and OpenAlex every Sunday, alongside arXiv. These are discovery routes, not just fallbacks. Use each combination as a separate query, adapting it to the week's trends:
+
+```text
+OLED "graph neural network"
+"organic light-emitting diode" "deep learning" "device prediction"
+OLED "machine learning" "device design"
+OLED "Bayesian optimization"
+"oxide TFT" "large language model"
+"oxide semiconductor" "literature extraction" display
+"thin-film transistor" "machine learning" backplane
+"mobility stability" "AI" "thin-film transistor"
+"display manufacturing" "process optimization" "machine learning"
+microLED "machine learning" yield
+"OLED materials" "machine learning" lifetime
+```
+
+Check relevant publisher results, including Wiley Advanced Intelligent Systems and Journal of SID, Springer Nature/Nano Convergence, ACS and IEEE. Use Crossref/OpenAlex bibliographic or title/abstract search; do not assume a search engine has indexed every metadata API record. Resolve candidate DOIs to publisher abstracts/full text before summarizing.
+
+For new-paper coverage verify first online publication in the weekly window. For `이번 주 트렌드와 연결한 주요 논문 리뷰`, also search without a date restriction and compare against known papers. Select one or two papers with the strongest connection to an actual weekly trend; older and covered papers are eligible. Read `operations-local/known_papers.json` and `research_coverage.md` when present in the workflow root, and honor exclusions. Treat title-only matches as leads; display relevance can be established in the abstract/full text.
+
 ## Sunday arXiv CS AI Search
 
 Sunday research coverage must include the following arXiv computer-science categories:
