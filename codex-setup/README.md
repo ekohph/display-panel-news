@@ -64,7 +64,7 @@ Before creating the automation, ask me only for missing choices:
 
 Use this task prompt for the recurring automation:
 
-Read codex-setup/README.md and the files under codex-setup/config, codex-setup/prompts, codex-setup/templates, and codex-setup/reference. Generate the public Korean display-panel news briefing for the current local date using only public sources. Use Google News RSS as a broad discovery layer but cite original publisher URLs. Exclude wikileaks-kr.org unless explicitly requested and strongly corroborated. Save the Markdown file under the configured summaries path. Keep the writing company-neutral and do not imply the user's affiliation. On Sundays, run the Sunday research pass and include 기술 논문 / 연구 동향 only when public sources show explicit display relevance. Do not send email. Commit and push only if the automation was explicitly configured to do so.
+Read codex-setup/README.md and the files under codex-setup/config, codex-setup/prompts, codex-setup/templates, and codex-setup/reference. Generate the public Korean display-panel news briefing for the current local date using only public sources. Use Google News RSS as a broad discovery layer but cite original publisher URLs. Exclude wikileaks-kr.org unless explicitly requested and strongly corroborated. Save the Markdown file under the configured summaries path. Keep the writing company-neutral and do not imply the user's affiliation. On Sundays, run the Sunday research pass and include 기술 논문 / 연구 동향 only when public sources establish display relevance or eligibility under config/research_rules.yml recurring_tracking_topics. Do not send email. Commit and push only if the automation was explicitly configured to do so.
 ```
 
 사용자 참고 사항:

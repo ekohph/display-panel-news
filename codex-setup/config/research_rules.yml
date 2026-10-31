@@ -1,7 +1,21 @@
 research_rules:
+  recurring_tracking_topics:
+    display_sensors:
+      scope: "Sensors integrated into or used with display panels: optical/fingerprint, proximity, ambient-light and NIR sensing with an established display application. General NIR sensors alone are outside scope."
+      touch_separate_search: "Search touch independently within sensors: in-cell/on-cell, capacitive/optical touch, stylus/pen input and integration across product segments."
+    stretchable_display:
+      scope: "Emitters, TFTs, electrodes/interconnects, substrates, encapsulation, strain/image compensation, manufacturing and reliability."
+    neuromorphic_tft:
+      scope: "Synaptic transistors, oxide/organic TFTs, optoelectronic synapses, plasticity, learning and device/array integration; direct display application is not required."
+    glass_packaging:
+      scope: "Glass substrates/core substrates/interposers, TGV, redistribution layers, panel-level packaging, equipment, processes and reliability; direct display application is not required."
+    search_rule: "Check all four topics and touch separately on every industrial-news pass, even without company-news candidates. Run broad paper searches on Sunday/monthly research dates using reference/search_queries.md."
+    eligibility: "Topic definitions take precedence over general display-anchor and non-display-application filters, including oxide/IGZO filters. Verify the actual topic match in public sources."
+    output_rule: "Include substantive verified non-duplicate findings only, omit empty sections, avoid quotas, state actual applications accurately and keep editorial-policy history out of public briefings."
+
   cadence:
     ordinary_daily: "Do not run broad paper search unless a research item is directly tied to a major public industry announcement."
-    sunday: "Run weekly research search and include a section only when meaningful display-related items are found."
+    sunday: "Run weekly research search and include a section only when meaningful display-related or recurring-topic items are found."
     monthly: "Include longer-horizon paper and research trend synthesis."
 
   sunday_ai_paper_review:
@@ -20,8 +34,9 @@ research_rules:
     weak_display_rule: "If display relevance is weak, place the item in a separate AI-related section and state the specific connection to displays and its limitation."
 
   include_when:
-    - "The source explicitly connects the work to display devices, panel architecture, display backplanes, pixels, OLED, LCD, AMOLED, microdisplay, active matrix, display manufacturing, or display materials."
-    - "The public abstract, official journal page, DOI metadata, university release, or reputable secondary source supports the display relevance."
+    - "A recurring_tracking_topics match establishes scope eligibility, including neuromorphic TFT and glass packaging without direct display application; public evidence and novelty rules still apply."
+    - "Scope eligibility requires a recurring_tracking_topics match OR an explicit source connection to display devices, panel architecture, display backplanes, pixels, OLED, LCD, AMOLED, microdisplay, active matrix, display manufacturing, or display materials."
+    - "The public abstract, official journal page, DOI metadata, university release, or reputable secondary source supports the display relevance or recurring tracking topic match."
     - "For new-paper sections, the item is meaningfully new and not already covered by DOI, arXiv ID, official URL, or normalized title. The separate Sunday trend-linked review may revisit covered or older papers."
 
   publisher_ai_discovery:
@@ -60,11 +75,13 @@ research_rules:
     rule: "Choose exactly one paper from the prior week; do not rank by citation count alone, and do not present a weakly related general AI paper as a display paper."
 
   exclude_when:
+    - "Apply general scope exclusions below only outside recurring_tracking_topics; topic-matched work still requires substantive public evidence."
     - "The work is only generally about semiconductors, optics, materials, sensors, memory, AI, or power electronics without explicit display relevance."
     - "The only visible information is paywalled and public metadata is too thin to support a defensible summary."
-    - "The paper is a minor incremental variant and has no clear implication for display technology, panel architecture, or manufacturing."
+    - "The paper is a minor incremental variant and has no clear implication for its tracked topic, display technology, panel architecture, or manufacturing."
 
   oxide_tft_and_igzo_rule:
+    applicability: "Display-backplane searches outside recurring_tracking_topics. Search neuromorphic TFT independently; display sensors follow their topic definition."
     reason: "IGZO and oxide semiconductors are used in both display backplanes and non-display semiconductor devices. Standalone IGZO is too broad."
     never_use_as_standalone_inclusion_terms:
       - "IGZO"
@@ -103,7 +120,6 @@ research_rules:
       - "DRAM"
       - "3D NAND"
       - "embedded memory"
-      - "neuromorphic memory"
       - "BEOL logic"
       - "power electronics"
       - "sensor"

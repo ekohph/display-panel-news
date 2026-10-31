@@ -119,7 +119,7 @@ Use the category pages or arXiv search filters for the prior Monday-Sunday windo
 
 ## Oxide TFT and IGZO Search
 
-Use co-occurrence style queries. Do not use standalone `IGZO`.
+For display-backplane searches outside the recurring tracking topics, use co-occurrence style queries. Do not use standalone `IGZO`.
 
 ```text
 "IGZO TFT" display backplane
@@ -138,13 +138,12 @@ site:sid.onlinelibrary.wiley.com/doi TFT display
 "active matrix" "oxide semiconductor TFT"
 ```
 
-Exclude results that only mention:
+Outside the recurring tracking topics, exclude results that only mention:
 
 ```text
 DRAM
 3D NAND
 embedded memory
-neuromorphic memory
 BEOL logic
 power electronics
 sensor
@@ -159,3 +158,58 @@ site:openalex.org exact paper title
 "exact paper title" DOI
 "exact paper title" abstract
 ```
+
+## Recurring Tracking Topics
+
+Run every group on each industrial-news pass, including touch separately. Use news/release variants daily and paper/DOI/abstract variants on Sunday/monthly research dates. Search Korean and English. Neuromorphic TFT and glass packaging do not require a display keyword. Sensor results require a demonstrated display application; NIR alone is insufficient.
+
+### 1. Display sensors
+
+```text
+디스플레이 센서 패널 통합
+under display sensor optical fingerprint
+OLED integrated photodetector sensor
+in-panel sensor ambient light proximity
+near infrared sensor display integration
+```
+
+### Touch: separate sensor search
+
+```text
+디스플레이 터치 센서 인셀 온셀
+in-cell on-cell touch display sensor
+capacitive optical touch display sensor
+OLED touch stylus pen input
+large area automotive wearable touch display
+```
+
+### 2. Stretchable display
+
+```text
+스트레처블 디스플레이 신축성 소자 봉지 신뢰성
+stretchable display OLED microLED TFT
+stretchable display interconnect electrode encapsulation
+stretchable display strain image compensation reliability
+```
+
+### 3. Neuromorphic TFT
+
+```text
+뉴로모픽 TFT 시냅스 트랜지스터
+neuromorphic thin film transistor
+synaptic transistor oxide organic TFT
+optoelectronic synaptic transistor plasticity array
+IGZO neuromorphic synaptic transistor
+```
+
+### 4. Glass packaging
+
+```text
+유리 패키징 유리기판 유리 인터포저 TGV
+glass packaging glass core substrate
+glass interposer through glass via TGV
+panel level glass packaging redistribution layer
+glass substrate packaging equipment reliability
+```
+
+Check every group before deciding that there are no candidates. Select by significance and public evidence; do not force an item per topic. State actual applications without assuming display use.

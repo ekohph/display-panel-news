@@ -1,5 +1,16 @@
 # Sunday Research Coverage Prompt
 
+## Recurring tracking topics
+
+Check these four topics on every industrial-news pass and in Sunday/monthly research searches. Search touch separately within display sensors. Use `display-panel-news/codex-setup/reference/search_queries.md` from the workflow root.
+
+1. Display sensors: sensors integrated into or used with display panels, including optical/fingerprint, proximity, ambient-light and NIR sensing when a display application is established. Touch is a separate search subtopic covering in-cell/on-cell, capacitive/optical touch, stylus/pen input and touch integration across product segments. General NIR sensor research alone is outside this topic.
+2. Stretchable display: emitters, TFTs, electrodes/interconnects, substrates, encapsulation, strain/image compensation, manufacturing and reliability.
+3. Neuromorphic TFT: synaptic transistors, oxide/organic TFTs, optoelectronic synapses, plasticity, learning and device/array integration. Track independently; direct display application is not required.
+4. Glass packaging: glass substrates/core substrates/interposers, through-glass vias (TGV), redistribution layers, panel-level packaging, equipment, processes and reliability. Track independently, including semiconductor packaging; direct display application is not required.
+
+These definitions govern topic eligibility alongside the general display scope, including oxide/IGZO research, and take precedence over general display-anchor and non-display-application filters. Check every topic and touch separately even when the company-news scan has no candidates. Daily checks cover industrial news; broad paper searches follow Sunday/monthly research cadence. Include substantive, verifiable, non-duplicate findings only; omit empty sections and avoid quotas. State demonstrated applications accurately without assuming display use. Public briefings describe technology and findings without editorial-policy history.
+
 Use this as an additional pass for Sunday briefings.
 
 ## Task
@@ -42,7 +53,7 @@ Rank first by direct display or panel-production relevance, then by technical si
 
 ## Include Only When
 
-The public record explicitly connects the work to at least one of:
+The public record establishes a recurring tracking topic match, or explicitly connects the work to at least one of:
 
 - display devices;
 - panel architecture;
@@ -56,12 +67,12 @@ The public record explicitly connects the work to at least one of:
 
 Do not include standalone IGZO results.
 
-For IGZO or oxide-semiconductor papers, require both:
+For display-backplane IGZO or oxide-semiconductor papers outside the recurring tracking topics, require both:
 
 1. a device term, such as `IGZO TFT`, `a-IGZO TFT`, `In-Ga-O TFT`, `IGO TFT`, `polycrystalline oxide TFT`, `oxide semiconductor TFT`, `thin-film transistor`, `oxygen diffusion`, `metal capping`, or `gate dielectric`; and
 2. a display anchor, such as `display`, `panel`, `backplane`, `pixel`, `OLED`, `LCD`, `AMOLED`, `microdisplay`, or `active matrix`.
 
-Exclude items whose only application is memory, BEOL logic, sensors, power electronics, or general semiconductor integration.
+Outside the recurring tracking topics, exclude items whose only application is memory, BEOL logic, sensors, power electronics, or general semiconductor integration.
 
 ## Output
 
@@ -70,7 +81,7 @@ Add this section only when there is at least one meaningful item:
 ```md
 ## 기술 논문 / 연구 동향
 
-최근 일주일(YYYY년 M월 D일~M월 D일)에 공개된 자료 중, 디스플레이 응용이 명확한 논문과 연구 자료만 포함했습니다.
+최근 일주일(YYYY년 M월 D일~M월 D일)에 공개된 자료 중, 디스플레이 및 지속 추적 토픽에 해당하는 논문과 연구 자료를 정리했습니다.
 
 - ...
   원문: https://...

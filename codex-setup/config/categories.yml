@@ -41,6 +41,12 @@ categories:
     - cover window
     - polarizer
     - touch sensor
+    - display sensor
+    - glass packaging
+    - glass core substrate
+    - glass interposer
+    - through-glass via
+    - panel-level packaging
     - equipment
     - regulation
 
@@ -72,6 +78,8 @@ categories:
     - oxide semiconductor TFT
     - display backplane
     - thin-film transistor
+    - neuromorphic TFT
+    - synaptic transistor
     - quantum dot emitter
     - perovskite LED
     - light extraction
